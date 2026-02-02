@@ -64,6 +64,7 @@ struct GameView: View {
                         .frame(maxWidth: .infinity)
                         .glassEffect()
                         .padding(.horizontal)
+                        .padding(.bottom)
                     }
                 }
             }

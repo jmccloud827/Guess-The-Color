@@ -31,16 +31,20 @@ struct GameSelection: View {
                 Toggle(isOn: $isPlusMode) {
                     VStack(alignment: .leading) {
                         Text("+ Mode")
+                            .font(.title2)
                         
                         Text("Questions stay the same but the answers are what I see...and I'm colorblind😈.")
+                            .font(.subheadline)
                             .foregroundStyle(.gray)
                             .multilineTextAlignment(.leading)
                     }
                 }
+                .padding()
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
-            .padding()
             .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+            .padding(.top)
             .padding(.horizontal)
         }
     }
