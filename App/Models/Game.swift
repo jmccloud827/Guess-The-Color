@@ -6,18 +6,21 @@ import SwiftUI
     let questions: [Question]
     var currentQuestion: Question?
     
-    init(mode: Mode) {
-        let questions =
+    init(mode: Mode, isPlusMode: Bool) {
+        let colors =
             switch mode {
             case .regular:
-                Self.regularColors.shuffled().map { Question(model: $0) }
+                Self.regularColors
             
             case .hard:
-                Self.impossibleColors.shuffled().map { .init(answer: $0.answer, name: $0.name) }.map { Question(model: $0) }
-            
-            case .impossible:
-                Self.impossibleColors.shuffled().map { Question(model: $0) }
+                Self.hardColors
             }
+        
+        let questions: [Question] = colors
+            .shuffled()
+            .prefix(10)
+            .map { isPlusMode ? .init(answer: $0.answer, name: $0.name, myAnswer: $0.myAnswer, notes: $0.notes) : .init(answer: $0.answer, name: $0.name) }
+        
         self.mode = mode
         self.questions = questions
         self.currentQuestion = questions.first
@@ -25,6 +28,14 @@ import SwiftUI
     
     func nextQuestion() {
         currentQuestion = questions.first { $0.result == nil }
+    }
+    
+    func averageOfAnsweredQuestions() -> Double {
+        let answeredQuestions = questions.compactMap(\.result)
+        guard !answeredQuestions.isEmpty else {
+            return 0
+        }
+        return Double(answeredQuestions.reduce(0, +)) / Double(answeredQuestions.count)
     }
     
     struct Color {
@@ -44,13 +55,11 @@ import SwiftUI
     enum Mode {
         case regular
         case hard
-        case impossible
         
         var title: String {
             switch self {
             case .regular: "Regular"
             case .hard: "Hard"
-            case .impossible: "Impossible"
             }
         }
         
@@ -58,23 +67,20 @@ import SwiftUI
             switch self {
             case .regular: "Simple colors found on the color wheel, nothing too tricky here👍."
             case .hard: "Ya know Crayola crayons🖍️? Yeah those types of names."
-            case .impossible: "The same colors as hard but the answers are my best guess. Sounds easy until I tell you I'm colorblind 😈."
             }
         }
         
         var gaugeColor: SwiftUI.Color {
             switch self {
             case .regular: .green
-            case .hard: .yellow
-            case .impossible: .red
+            case .hard: .red
             }
         }
         
         var gaugeValue: Double {
             switch self {
             case .regular: 1 / 3
-            case .hard: 2 / 3
-            case .impossible: 1
+            case .hard: 1 / 2
             }
         }
     }
@@ -83,32 +89,56 @@ import SwiftUI
 extension Game {
     static let regularColors: [Color] = [
         .init(answer: .init(red: 255, green: 0, blue: 0),
-              name: "Red"),
+              name: "Red",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 255, green: 68, blue: 51),
-              name: "Red-Orange"),
+              name: "Red-Orange",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 255, green: 165, blue: 0),
-              name: "Orange"),
+              name: "Orange",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 255, green: 170, blue: 51),
-              name: "Yellow-Orange"),
+              name: "Yellow-Orange",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 255, green: 255, blue: 0),
-              name: "Yellow"),
+              name: "Yellow",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 173, green: 255, blue: 47),
-              name: "Yellow-Green"),
+              name: "Yellow-Green",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 255, green: 0, blue: 0),
-              name: "Green"),
+              name: "Green",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 8, green: 143, blue: 143),
-              name: "Blue-Green"),
+              name: "Blue-Green",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 0, green: 255, blue: 0),
-              name: "Blue"),
+              name: "Blue",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 138, green: 43, blue: 226),
-              name: "Blue-Violet"),
+              name: "Blue-Violet",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 127, green: 0, blue: 255),
-              name: "Violet"),
+              name: "Violet",
+              myAnswer: nil,
+              notes: nil),
         .init(answer: .init(red: 199, green: 21, blue: 133),
-              name: "Red-Violet")
+              name: "Red-Violet",
+              myAnswer: nil,
+              notes: nil)
     ]
     
-    static let impossibleColors: [Color] = [
+    static let hardColors: [Color] = [
         .init(answer: .init(red: 127, green: 255, blue: 0),
               name: "Chartreuse",
               myAnswer: .init(red: 0, green: 128, blue: 128),

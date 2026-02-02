@@ -138,7 +138,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 30A1244E2F2E539800AC99A0 /* Build configuration list for PBXProject "Color Guess" */;
+			buildConfigurationList = 30A1244E2F2E539800AC99A0 /* Build configuration list for PBXProject "Guess the Color" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -321,6 +321,7 @@
 				DEVELOPMENT_TEAM = JY83NY58JG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guess the Color";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -354,6 +355,7 @@
 				DEVELOPMENT_TEAM = JY83NY58JG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guess the Color";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -380,7 +382,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		30A1244E2F2E539800AC99A0 /* Build configuration list for PBXProject "Color Guess" */ = {
+		30A1244E2F2E539800AC99A0 /* Build configuration list for PBXProject "Guess the Color" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				30A1245C2F2E539A00AC99A0 /* Debug */,

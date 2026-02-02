@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GameSelection: View {
     @State private var game: Game? = nil
+    @State private var isPlusMode = false
     
     var body: some View {
         ScrollView {
@@ -9,8 +10,6 @@ struct GameSelection: View {
                 makeDifficultyLevel(mode: .regular)
                 
                 makeDifficultyLevel(mode: .hard)
-                
-                makeDifficultyLevel(mode: .impossible)
             }
             .padding(.horizontal)
         }
@@ -25,24 +24,46 @@ struct GameSelection: View {
                     .foregroundStyle(LinearGradient(gradient: Gradient(colors: self.makeHueColors(stepSize: 0.01)), startPoint: .leading, endPoint: .trailing))
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                isPlusMode.toggle()
+            } label: {
+                Toggle(isOn: $isPlusMode) {
+                    VStack(alignment: .leading) {
+                        Text("+ Mode")
+                        
+                        Text("Questions stay the same but the answers are what I see...and I'm colorblind😈.")
+                            .foregroundStyle(.gray)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            .padding()
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+            .padding(.horizontal)
+        }
     }
     
     private func makeDifficultyLevel(mode: Game.Mode) -> some View {
         Button {
-            game = .init(mode: mode)
+            game = .init(mode: mode, isPlusMode: isPlusMode)
         } label: {
             HStack {
-                Gauge(value: mode.gaugeValue) {
+                Gauge(value: mode.gaugeValue * (isPlusMode ? 2 : 1)) {
                     Text("")
                 }
                 .gaugeStyle(.accessoryCircular)
                 .tint(mode.gaugeColor.gradient)
                 .padding(.trailing)
+                .animation(.default, value: isPlusMode)
                 
                 VStack(alignment: .leading) {
-                    Text(mode.title)
+                    Text(mode.title + (isPlusMode ? "+" : ""))
                         .font(.title)
                         .foregroundStyle(mode.gaugeColor)
+                        .animation(.default, value: isPlusMode)
+                        .contentTransition(.numericText())
                     
                     Text(mode.description)
                         .foregroundStyle(.gray)

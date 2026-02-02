@@ -11,7 +11,60 @@ struct GameView: View {
                 if let question = game.currentQuestion {
                     QuestionView(question: question)
                 } else {
-                    Text("Game is over")
+                    ScrollView {
+                        VStack(spacing: 15) {
+                            ForEach(game.questions.enumerated(), id: \.offset) { index, question in
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text("Question: \(index + 1)")
+                                                .font(.title)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            
+                                            HStack(spacing: 0) {
+                                                Text("Name: ")
+                                                Text(question.name)
+                                                    .foregroundStyle(question.answer)
+                                            }
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Gauge(value: (question.result ?? 0)) {
+                                            Text("Score: \((question.result ?? 0).formatted(.percent.precision(.significantDigits(3)).rounded(rule: .up)))")
+                                        }
+                                        .tint(question.answer)
+                                    }
+                                    
+                                    HStack {
+                                        Text("Guess: ")
+                                        
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .foregroundStyle(question.guess)
+                                    }
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 20)
+                                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    .safeAreaInset(edge: .top) {
+                        HStack {
+                            Text("Average Score: ")
+                                .bold()
+                                
+                            Text(game.averageOfAnsweredQuestions().formatted(.percent.precision(.significantDigits(3)).rounded(rule: .up)))
+                                .font(.title)
+                                .bold()
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .glassEffect()
+                        .padding(.horizontal)
+                    }
                 }
             }
             .environment(game)
@@ -39,6 +92,15 @@ struct GameView: View {
     }
 }
 
-#Preview {
-    GameView(game: .init(mode: .impossible))
+#Preview("Start") {
+    let game = Game(mode: .hard, isPlusMode: true)
+    
+    return GameView(game: game)
+}
+
+#Preview("End") {
+    let game = Game(mode: .hard, isPlusMode: true)
+    game.questions.forEach { $0.commitAnswer(); $0.calculateResult(); game.nextQuestion() }
+    
+    return GameView(game: game)
 }

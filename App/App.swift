@@ -16,12 +16,14 @@ struct App: SwiftUI.App {
     return Image(systemName: "paintpalette")
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .foregroundStyle(LinearGradient(gradient: Gradient(colors: makeHueColors(stepSize: 0.01)), startPoint: .trailing, endPoint: .topLeading))
+        .foregroundStyle(.black)
             .frame(width: 250, height: 250)
         .padding()
         .padding()
         .padding(44)
-        .background(.black)
+        .background {
+            LinearGradient(gradient: Gradient(colors: makeHueColors(stepSize: 0.01)), startPoint: .trailing, endPoint: .topLeading)
+        }
     
     func makeHueColors(stepSize: Double) -> [Color] {
         stride(from: 0, to: 1, by: 0.01).map {

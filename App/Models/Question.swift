@@ -5,14 +5,14 @@ import SwiftUI
     let name: String
     let myAnswer: Color?
     let notes: String?
-    var guess: Color = .black
+    var guess: Color = .init(hue: 0, saturation: 1, brightness: 0.9999999)
     var result: Double?
     
-    init(model: Game.Color) {
-        self.answer = model.answer
-        self.name = model.name
-        self.myAnswer = model.myAnswer
-        self.notes = model.notes
+    init(answer: Color, name: String, myAnswer: Color? = nil, notes: String? = nil) {
+        self.answer = answer
+        self.name = name
+        self.myAnswer = myAnswer
+        self.notes = notes
     }
     
     func commitAnswer() {
