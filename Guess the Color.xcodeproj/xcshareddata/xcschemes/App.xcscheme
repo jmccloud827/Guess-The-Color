@@ -18,7 +18,7 @@
                BlueprintIdentifier = "30A124522F2E539900AC99A0"
                BuildableName = "App.app"
                BlueprintName = "App"
-               ReferencedContainer = "container:Color Guess.xcodeproj">
+               ReferencedContainer = "container:Guess the Color.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "30A124522F2E539900AC99A0"
             BuildableName = "App.app"
             BlueprintName = "App"
-            ReferencedContainer = "container:Color Guess.xcodeproj">
+            ReferencedContainer = "container:Guess the Color.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -57,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "30A124522F2E539900AC99A0"
             BuildableName = "App.app"
             BlueprintName = "App"
-            ReferencedContainer = "container:Color Guess.xcodeproj">
+            ReferencedContainer = "container:Guess the Color.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
