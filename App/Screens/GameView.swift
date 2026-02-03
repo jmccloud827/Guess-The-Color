@@ -7,66 +7,18 @@ struct GameView: View {
     
     var body: some View {
         NavigationStack {
-            Group {
-                if let question = game.currentQuestion {
-                    QuestionView(question: question)
-                } else {
-                    ScrollView {
-                        VStack(spacing: 15) {
-                            ForEach(game.questions.enumerated(), id: \.offset) { index, question in
-                                VStack(alignment: .leading) {
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text("Question: \(index + 1)")
-                                                .font(.title)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                            
-                                            HStack(spacing: 0) {
-                                                Text("Name: ")
-                                                Text(question.name)
-                                                    .foregroundStyle(question.answer)
-                                            }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
-                                        
-                                        Spacer()
-                                        
-                                        Gauge(value: (question.result ?? 0)) {
-                                            Text("Score: \((question.result ?? 0).formatted(.percent.precision(.significantDigits(3)).rounded(rule: .up)))")
-                                        }
-                                        .tint(question.answer)
-                                    }
-                                    
-                                    HStack {
-                                        Text("Guess: ")
-                                        
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .foregroundStyle(question.guess)
-                                    }
-                                }
-                                .padding(.horizontal)
-                                .padding(.vertical, 20)
-                                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    .safeAreaInset(edge: .top) {
-                        HStack {
-                            Text("Average Score: ")
-                                .bold()
-                                
-                            Text(game.averageOfAnsweredQuestions().formatted(.percent.precision(.significantDigits(3)).rounded(rule: .up)))
-                                .font(.title)
-                                .bold()
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .glassEffect()
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                    }
-                }
+            ZStack {
+                QuestionView(question: game.currentQuestion)
+                    .offset(x: game.isComplete ? -UIScreen.main.bounds.width : 0)
+                
+                Results()
+                    .offset(x: game.isComplete ? 0 : UIScreen.main.bounds.width)
+            }
+            .safeAreaInset(edge: .top) {
+                topView
+            }
+            .safeAreaInset(edge: .bottom) {
+                bottomButton
             }
             .environment(game)
             .navigationBarTitleDisplayMode(.inline)
@@ -80,28 +32,139 @@ struct GameView: View {
                 ToolbarItem(placement: .principal) {
                     Text(game.mode.title)
                         .font(.title)
-                        .foregroundStyle(LinearGradient(gradient: Gradient(colors: self.makeHueColors(stepSize: 0.01)), startPoint: .leading, endPoint: .trailing))
+                        .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
             }
         }
     }
     
-    private func makeHueColors(stepSize _: Double) -> [Color] {
-        stride(from: 0, to: 1, by: 0.01).map {
-            Color(hue: $0, saturation: 1, brightness: 1)
+    private var topView: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text(game.isComplete ? "Average Score: " : "Name: ")
+                        .bold()
+                        
+                    Text(game.isComplete ? game.averageScoreToMyAnswer.formatted(decimalFormat) : game.currentQuestion.name)
+                        .font(.title)
+                        .bold()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .contentTransition(.numericText())
+                }
+                
+                HStack {
+                    Text("\(game.isPlusMode ? "Score to my guess" : "Score"): ")
+                        .bold()
+                        
+                    Text((game.isPlusMode ? game.currentQuestion.scoreToMyAnswer : game.currentQuestion.scoreToCorrectAnswer).formatted(decimalFormat))
+                        .contentTransition(.numericText())
+                        .font(.title3)
+                        .bold()
+                        .minimumScaleFactor(0.7)
+                }
+                .frame(height: game.isComplete || !game.currentQuestion.isAnswered ? 0 : nil)
+                .offset(x: game.isComplete || !game.currentQuestion.isAnswered ? -100 : 0)
+                .clipped()
+                
+                if game.isPlusMode {
+                    HStack {
+                        Text("My Average Score: ")
+                            .bold()
+                        
+                        Text(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))
+                            .contentTransition(.numericText())
+                            .font(.title3)
+                            .bold()
+                            .minimumScaleFactor(0.7)
+                    }
+                    .frame(height: !game.isComplete ? 0 : nil)
+                    .offset(x: !game.isComplete ? -100 : 0)
+                    .clipped()
+                }
+            }
+            .padding(.vertical)
+            
+            if game.currentQuestion.isAnswered || game.isComplete {
+                Spacer()
+            }
+                
+            Group {
+                if game.isComplete {
+                    Gauge(value: game.averageScoreToMyAnswer) {
+                        Text("")
+                    }
+                    .tint(hueGradient)
+                    .padding(.vertical)
+                } else {
+                    Gauge(value: game.currentQuestion.myScoreToCorrectAnswer) {
+                        Text("")
+                    }
+                    .tint(game.currentQuestion.answer)
+                    .frame(width: game.currentQuestion.isAnswered ? nil : 0)
+                    .offset(x: game.currentQuestion.isAnswered ? 0 : 100)
+                    .clipped()
+                }
+            }
+            .gaugeStyle(.accessoryCircular)
+            .scaleEffect(0.9)
         }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal)
+        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .padding(.bottom)
+        .padding(.horizontal)
+    }
+    
+    private var bottomButton: some View {
+        Text(game.isComplete ? "Done" : game.currentQuestion.isAnswered ? "Next Question" : "Guess")
+            .font(.title2)
+            .padding(.vertical, 15)
+            .frame(maxWidth: .infinity)
+            .contentTransition(.numericText())
+            .background {
+                RoundedRectangle(cornerRadius: 50)
+                    .foregroundStyle(.bar)
+            }
+            .glassEffect(.regular.interactive())
+            .padding(.top)
+            .padding(.horizontal)
+            .onTapGesture {
+                if game.isComplete {
+                    dismiss()
+                } else {
+                    if game.currentQuestion.isAnswered {
+                        withAnimation {
+                            game.nextQuestion()
+                        } completion: {
+                            if game.isComplete {
+                                withAnimation {
+                                    game.calculateAverageScores()
+                                }
+                            }
+                        }
+                    } else {
+                        withAnimation {
+                            game.currentQuestion.isAnswered = true
+                        } completion: {
+                            withAnimation {
+                                game.currentQuestion.calculateScores()
+                            }
+                        }
+                    }
+                }
+            }
     }
 }
 
-#Preview("Start") {
-    let game = Game(mode: .hard, isPlusMode: true)
+#Preview("Regular") {
+    let game = Game(mode: .hard, isPlusMode: false)
     
     return GameView(game: game)
 }
 
-#Preview("End") {
+#Preview("Plus Mode") {
     let game = Game(mode: .hard, isPlusMode: true)
-    game.questions.forEach { $0.commitAnswer(); $0.calculateResult(); game.nextQuestion() }
     
     return GameView(game: game)
 }

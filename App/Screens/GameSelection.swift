@@ -12,6 +12,7 @@ struct GameSelection: View {
                 makeDifficultyLevel(mode: .hard)
             }
             .padding(.horizontal)
+            .padding(.top)
         }
         .fullScreenCover(item: $game) { game in
             GameView(game: game)
@@ -21,7 +22,7 @@ struct GameSelection: View {
             ToolbarItem(placement: .principal) {
                 Text("Guess the Color")
                     .font(.title)
-                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: self.makeHueColors(stepSize: 0.01)), startPoint: .leading, endPoint: .trailing))
+                    .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -33,7 +34,7 @@ struct GameSelection: View {
                         Text("+ Mode")
                             .font(.title2)
                         
-                        Text("Questions stay the same but the answers are what I see...and I'm colorblind😈.")
+                        Text("Questions stay the same but the answers are my guesses... and I'm colorblind😈.")
                             .font(.subheadline)
                             .foregroundStyle(.gray)
                             .multilineTextAlignment(.leading)
@@ -80,12 +81,6 @@ struct GameSelection: View {
             .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 50))
         }
         .buttonStyle(.plain)
-    }
-    
-    private func makeHueColors(stepSize: Double) -> [Color] {
-        stride(from: 0, to: 1, by: 0.01).map {
-            Color(hue: $0, saturation: 1, brightness: 1)
-        }
     }
 }
 

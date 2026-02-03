@@ -6,162 +6,110 @@ struct QuestionView: View {
     
     @Bindable var question: Question
     
+    @State private var isDisclosureGroupOpen = true
+    
     var body: some View {
         ZStack {
             questionView
-                .offset(y: question.result != nil ? -UIScreen.main.bounds.height : 0)
+                .offset(y: question.isAnswered ? -UIScreen.main.bounds.height : 0)
             
             resultsView
-                .offset(y: question.result != nil ? 0 : UIScreen.main.bounds.height)
-        }
-        .safeAreaInset(edge: .top) {
-            HStack {
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack {
-                        Text("Name: ")
-                            .bold()
-                        
-                        Text(question.name)
-                            .font(.title)
-                            .bold()
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .contentTransition(.numericText())
-                    }
-                    .padding(.trailing)
-                    
-                    HStack {
-                        Text("Score: ")
-                            .bold()
-                        
-                        Text((question.result ?? 0).formatted(.percent.precision(.significantDigits(3)).rounded(rule: .up)))
-                            .contentTransition(.numericText())
-                            .font(.title3)
-                            .bold()
-                            .minimumScaleFactor(0.7)
-                    }
-                    .frame(height: question.result == nil ? 0 : nil)
-                    .offset(x: question.result == nil ? -100 : 0)
-                    .clipped()
-                }
-                .padding(.vertical)
-                
-                if question.result != nil {
-                    Spacer()
-                }
-                
-                Gauge(value: (question.result ?? 0)) {
-                    Text("")
-                }
-                .gaugeStyle(.accessoryCircular)
-                .tint(question.answer)
-                .scaleEffect(0.9)
-                .frame(width: question.result == nil ? 0 : nil)
-                .offset(x: question.result == nil ? 100 : 0)
-                .clipped()
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal)
-            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-            .padding(.bottom)
-        }
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                withAnimation {
-                    if question.result == nil {
-                        question.commitAnswer()
-                    } else {
-                        game.nextQuestion()
-                    }
-                } completion: {
-                    withAnimation {
-                        if question.result != nil {
-                            question.calculateResult()
-                        }
-                    }
-                }
-            } label: {
-                Text(question.result == nil ? "Guess" : "Next Question")
-                    .font(.title2)
-                    .padding(.vertical, 5)
-                    .frame(maxWidth: .infinity)
-                    .contentTransition(.numericText())
-            }
-            .buttonStyle(.glass)
-            .padding(.top)
+                .offset(y: question.isAnswered ? 0 : UIScreen.main.bounds.height)
         }
         .padding(.horizontal)
     }
     
     private var questionView: some View {
         VStack {
-            ColorPicker3(color: $question.guess)
+            ColorPicker(color: $question.guess)
         }
     }
     
     private var resultsView: some View {
         VStack(spacing: 10) {
-            if let myAnswer = question.myAnswer {
-                makeColorLabel(for: question.guess, title: "Your Guess")
+            if game.isPlusMode {
+                makeColorLabel(for: question.guess, title: "Your Guess", score: nil, scoreTitle: nil)
                 
-                makeColorLabel(for: myAnswer, title: "My Answer")
+                makeColorLabel(for: question.myAnswer, title: "My Answer", score: question.myScoreToCorrectAnswer, scoreTitle: "My score to correct color")
                 
-                if let notes = question.notes {
-                    Text("My reasoning: " + notes)
-                        .padding()
+                DisclosureGroup(isExpanded: $isDisclosureGroupOpen) {
+                    VStack(alignment: .leading) {
+                        Text(question.notes)
+                    }
+                } label: {
+                    Text("My Reasoning: ")
+                        .font(.title3)
                 }
+                .padding()
+                .tint(ForegroundStyle.foreground)
+                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
                 
-                makeColorLabel(for: question.answer, title: "Actual Color")
+                makeColorLabel(for: question.answer, title: "Actual Color", score: question.scoreToCorrectAnswer, scoreTitle: "Your score to correct color")
             } else {
-                makeColorLabel(for: question.guess, title: "Your Guess")
+                makeColorLabel(for: question.guess, title: "Your Guess", score: nil, scoreTitle: nil)
                 
-                makeColorLabel(for: question.answer, title: "Answer")
+                makeColorLabel(for: question.answer, title: "Answer", score: nil, scoreTitle: nil)
             }
         }
     }
     
-    private func makeColorLabel(for color: Color, title: String) -> some View {
+    private func makeColorLabel(for color: Color, title: String, score: Double?, scoreTitle: String?) -> some View {
         RoundedRectangle(cornerRadius: 40)
             .foregroundStyle(color)
             .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 40))
             .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
             .overlay {
-                Text(title)
-                    .font(.title2)
-                    .bold()
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .glassEffect(.regular.interactive())
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(title)
+                            .font(.title3)
+                            .bold()
+                        
+                        if let score, let scoreTitle {
+                            HStack(spacing: 0) {
+                                Text("\(scoreTitle): ")
+                                    .bold()
+                                
+                                Text(score.formatted(decimalFormat))
+                                    .contentTransition(.numericText())
+                                    .bold()
+                            }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                        }
+                    }
+                    
+                    if let score {
+                        Spacer()
+                        
+                        Gauge(value: score) {
+                            Text("")
+                        }
+                        .gaugeStyle(.accessoryCircular)
+                        .tint(color)
+                        .scaleEffect(0.75)
+                        .frame(height: 45)
+                        .clipped()
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 25))
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
     }
 }
 
+
 #Preview("Regular") {
     let game = Game(mode: .hard, isPlusMode: false)
-    guard let question = game.currentQuestion else {
-        return EmptyView()
-    }
     
-    return NavigationStack {
-        QuestionView(question: question)
-            .environment(game)
-            .navigationTitle("Preview")
-            .navigationBarTitleDisplayMode(.inline)
-    }
+    return GameView(game: game)
 }
 
 #Preview("Plus Mode") {
     let game = Game(mode: .hard, isPlusMode: true)
-    guard let question = game.currentQuestion else {
-        return EmptyView()
-    }
     
-    return NavigationStack {
-        QuestionView(question: question)
-            .environment(game)
-            .navigationTitle("Preview")
-            .navigationBarTitleDisplayMode(.inline)
-    }
+    return GameView(game: game)
 }

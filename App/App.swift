@@ -22,12 +22,6 @@ struct App: SwiftUI.App {
         .padding()
         .padding(44)
         .background {
-            LinearGradient(gradient: Gradient(colors: makeHueColors(stepSize: 0.01)), startPoint: .trailing, endPoint: .topLeading)
+            LinearGradient(gradient: hueGradient, startPoint: .trailing, endPoint: .topLeading)
         }
-    
-    func makeHueColors(stepSize: Double) -> [Color] {
-        stride(from: 0, to: 1, by: 0.01).map {
-            Color(hue: $0, saturation: 1, brightness: 1)
-        }
-    }
 }

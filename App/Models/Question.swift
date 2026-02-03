@@ -3,30 +3,30 @@ import SwiftUI
 @Observable class Question {
     let answer: Color
     let name: String
-    let myAnswer: Color?
-    let notes: String?
+    let myAnswer: Color
+    let notes: String
     var guess: Color = .init(hue: 0, saturation: 1, brightness: 0.9999999)
-    var result: Double?
+    var scoreToMyAnswer = 0.0
+    var scoreToCorrectAnswer = 0.0
+    var myScoreToCorrectAnswer = 0.0
+    var isAnswered = false
     
-    init(answer: Color, name: String, myAnswer: Color? = nil, notes: String? = nil) {
+    init(answer: Color, name: String, myAnswer: Color, notes: String) {
         self.answer = answer
         self.name = name
         self.myAnswer = myAnswer
         self.notes = notes
     }
     
-    func commitAnswer() {
-        result = 0
+    func calculateScores() {
+        scoreToMyAnswer = Self.getScore(guess: guess, answer: myAnswer)
+        scoreToCorrectAnswer = Self.getScore(guess: guess, answer: answer)
+        myScoreToCorrectAnswer = Self.getScore(guess: myAnswer, answer: answer)
     }
     
-    func calculateResult() {
+    private static func getScore(guess: Color, answer: Color) -> Double {
         let guessRGB = guess.getRGB()
-        let answerRGB =
-            if let myAnswer {
-                myAnswer.getRGB()
-            } else {
-                answer.getRGB()
-            }
+        let answerRGB = answer.getRGB()
         
         let redPercent = 1 - abs(answerRGB.red - guessRGB.red)
         let greenPercent = 1 - abs(answerRGB.green - guessRGB.green)
@@ -34,7 +34,7 @@ import SwiftUI
         
         let average = (redPercent + greenPercent + bluePercent) / 3
         
-        result = average
+        return average
     }
 }
 
