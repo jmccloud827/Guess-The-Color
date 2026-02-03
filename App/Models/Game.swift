@@ -115,7 +115,7 @@ extension Game {
               name: "Yellow-Green",
               myAnswer: .init(red: 196, green: 255, blue: 87),
               notes: "I vividly remember using a crayon of this color in kindergarten for some reason."),
-        .init(answer: .init(red: 255, green: 0, blue: 0),
+        .init(answer: .init(red: 0, green: 255, blue: 0),
               name: "Green",
               myAnswer: .init(red: 41, green: 237, blue: 33),
               notes: "Reds, greens, and browns generally all look the same to me."),
@@ -123,7 +123,7 @@ extension Game {
               name: "Blue-Green",
               myAnswer: .init(red: 33, green: 237, blue: 169),
               notes: "I think this is teal? I'll be really sad if it isn't."),
-        .init(answer: .init(red: 0, green: 255, blue: 0),
+        .init(answer: .init(red: 0, green: 0, blue: 255),
               name: "Blue",
               myAnswer: .init(red: 33, green: 67, blue: 237),
               notes: "Blues, purples, and blacks generally all look the same to me."),
@@ -190,6 +190,13 @@ extension Game {
               name: "Glaucous",
               myAnswer: .init(red: 24, green: 135, blue: 0),
               notes: "Not even sure how to pronounce this much less what it looks like. It's spelled similar to Glaucoma but I don't think that helps me.")
+    ]
+    
+    static let impossibleColors: [Color] = [
+        .init(answer: .init(red: 127, green: 255, blue: 0),
+              name: "Chartreuse",
+              myAnswer: .init(red: 0, green: 128, blue: 128),
+              notes: "No idea what this is but I like saying the name of it.")
     ]
 }
 
