@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GameView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     
     let game: Game
     
@@ -41,16 +42,28 @@ struct GameView: View {
     private var topView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text(game.isComplete ? "Average Score: " : "Name: ")
-                        .bold()
-                        
-                    Text(game.isComplete ? game.averageScoreToMyAnswer.formatted(decimalFormat) : game.currentQuestion.name)
-                        .font(.title)
-                        .bold()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .contentTransition(.numericText())
+                VStack(spacing: 0) {
+                    HStack {
+                        Text(game.isComplete ? game.isPlusMode ? "Average score to my guess: " : "Average Score: " : "Name: ")
+                            .bold()
+                            
+                        Text(game.isComplete ? game.averageScoreToMyAnswer.formatted(decimalFormat) : game.currentQuestion.name)
+                            .font(.title)
+                            .bold()
+                            .contentTransition(.numericText())
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .frame(maxWidth: .infinity, alignment: game.isComplete || game.currentQuestion.isAnswered ? .leading : .center)
+                    
+                    if game.isComplete {
+                        Gauge(value: game.averageScoreToMyAnswer) {
+                            Text("")
+                        }
+                        .tint(hueGradient)
+                        .gaugeStyle(.accessoryLinear)
+                        .padding(.top, 5)
+                    }
                 }
                 
                 HStack {
@@ -68,35 +81,46 @@ struct GameView: View {
                 .clipped()
                 
                 if game.isPlusMode {
-                    HStack {
-                        Text("My Average Score: ")
-                            .bold()
-                        
-                        Text(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))
-                            .contentTransition(.numericText())
-                            .font(.title3)
-                            .bold()
-                            .minimumScaleFactor(0.7)
+                    Text("Average score to correct color: ")
+                        .padding(.top, 5)
+                        .padding(.vertical, 5)
+                        .frame(height: game.isComplete ? nil : 0)
+                        .offset(x: game.isComplete ? 0 : -100)
+                        .clipped()
+                    
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("You: \(game.averageScoreToCorrectAnswer.formatted(decimalFormat))")
+                                
+                            Gauge(value: game.averageScoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(colorScheme == .light ? .black : .white)
+                            .gaugeStyle(.accessoryLinear)
+                        }
+                        .frame(width: game.isComplete ? nil : 0, height: game.isComplete ? nil : 0)
+                        .offset(x: game.isComplete ? 0 : -100)
+                        .clipped()
+                            
+                        HStack {
+                            Text("Me: \(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))")
+                                
+                            Gauge(value: game.myAverageScoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(colorScheme == .light ? .black : .white)
+                            .gaugeStyle(.accessoryLinear)
+                        }
+                        .frame(width: game.isComplete ? nil : 0, height: game.isComplete ? nil : 0)
+                        .offset(x: game.isComplete ? 0 : -100)
+                        .clipped()
                     }
-                    .frame(height: !game.isComplete ? 0 : nil)
-                    .offset(x: !game.isComplete ? -100 : 0)
-                    .clipped()
                 }
             }
             .padding(.vertical)
-            
-            if game.currentQuestion.isAnswered || game.isComplete {
-                Spacer()
-            }
                 
             Group {
-                if game.isComplete {
-                    Gauge(value: game.averageScoreToMyAnswer) {
-                        Text("")
-                    }
-                    .tint(hueGradient)
-                    .padding(.vertical)
-                } else {
+                if !game.isComplete {
                     Gauge(value: game.currentQuestion.myScoreToCorrectAnswer) {
                         Text("")
                     }
@@ -107,7 +131,6 @@ struct GameView: View {
                 }
             }
             .gaugeStyle(.accessoryCircular)
-            .scaleEffect(0.9)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
