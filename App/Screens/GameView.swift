@@ -77,7 +77,7 @@ struct GameView: View {
                         .minimumScaleFactor(0.7)
                 }
                 .frame(height: game.isComplete || !game.currentQuestion.isAnswered ? 0 : nil)
-                .offset(x: game.isComplete || !game.currentQuestion.isAnswered ? -100 : 0)
+                .offset(y: game.isComplete || !game.currentQuestion.isAnswered ? 100 : 0)
                 .clipped()
                 
                 if game.isPlusMode {

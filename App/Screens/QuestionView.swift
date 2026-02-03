@@ -37,7 +37,7 @@ struct QuestionView: View {
                         Text(question.notes)
                     }
                 } label: {
-                    Text("My Reasoning: ")
+                    Text("My thoughts/notes: ")
                         .font(.title3)
                 }
                 .padding()
