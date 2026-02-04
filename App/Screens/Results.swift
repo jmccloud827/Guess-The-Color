@@ -8,7 +8,7 @@ struct Results: View {
         ScrollView {
             VStack(spacing: 15) {
                 ForEach(game.questions.enumerated(), id: \.offset) { _, question in
-                    VStack {
+                    VStack(spacing: 10) {
                         HStack {
                             VStack(alignment: .leading) {
                                 HStack(spacing: 0) {
@@ -44,11 +44,10 @@ struct Results: View {
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
                         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
-                        .padding(.bottom, 5)
                         
-                        HStack {
-                            VStack(alignment: .leading, spacing: 0) {
-                                if game.isPlusMode {
+                        if game.isPlusMode {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 0) {
                                     Text("Score to actual color: ")
                                     
                                     VStack(alignment: .leading, spacing: 0) {
@@ -72,6 +71,7 @@ struct Results: View {
                                             .gaugeStyle(.accessoryLinear)
                                         }
                                     }
+                                    .padding(.horizontal)
                                 }
                             }
                         }
@@ -92,6 +92,105 @@ struct Results: View {
                     .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.25), radius: 1)
                 }
             }
+            .padding(.horizontal)
+        }
+        .safeAreaInset(edge: .top) {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
+                    VStack(spacing: 10) {
+                        if game.isPlusMode {
+                            VStack(spacing: 10) {
+                                HStack {
+                                    Text("Average score to my guess: ")
+                                        .bold()
+                                        
+                                    Text(game.averageScoreToMyAnswer.formatted(decimalFormat))
+                                        .font(.title)
+                                        .bold()
+                                        .contentTransition(.numericText())
+                                }
+                                    
+                                Gauge(value: game.averageScoreToMyAnswer) {
+                                    Text("")
+                                }
+                                .tint(hueGradient)
+                                .gaugeStyle(.accessoryLinear)
+                            }
+                            .padding()
+                            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                        } else {
+                            HStack {
+                                Text("Average score: ")
+                                    .bold()
+                                        
+                                Text(game.averageScoreToCorrectAnswer.formatted(decimalFormat))
+                                    .font(.title)
+                                    .bold()
+                                    .contentTransition(.numericText())
+                            }
+                                    
+                            Gauge(value: game.averageScoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(hueGradient)
+                            .gaugeStyle(.accessoryLinear)
+                        }
+                    }
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                }
+                
+                if game.isPlusMode {
+                    Text("Average score to actual color: ")
+                        .padding(.top, 5)
+                        .padding(.vertical, 5)
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack {
+                            HStack {
+                                Text("You: ")
+                                
+                                Text(game.averageScoreToCorrectAnswer.formatted(decimalFormat))
+                                    .bold()
+                                    .contentTransition(.numericText())
+                            }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                                
+                            Gauge(value: game.averageScoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(colorScheme == .light ? .black : .white)
+                            .gaugeStyle(.accessoryLinear)
+                        }
+                            
+                        HStack {
+                            HStack {
+                                Text("Me: ")
+                                
+                                Text(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))
+                                    .bold()
+                                    .contentTransition(.numericText())
+                            }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                                
+                            Gauge(value: game.myAverageScoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(colorScheme == .light ? .black : .white)
+                            .gaugeStyle(.accessoryLinear)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            .padding(.vertical)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+            .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.25), radius: 1)
+            .padding(.bottom)
             .padding(.horizontal)
         }
     }
