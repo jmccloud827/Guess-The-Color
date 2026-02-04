@@ -7,6 +7,7 @@ struct QuestionView: View {
     @Bindable var question: Question
     
     @State private var isDisclosureGroupOpen = true
+    @AppStorage("Picker Type") private var pickerType = 1
     
     var body: some View {
         ZStack {
@@ -20,21 +21,45 @@ struct QuestionView: View {
     }
     
     private var questionView: some View {
-        VStack {
-            ColorPicker(color: $question.guess)
+        GeometryReader { geometry in
+            VStack(spacing: 20) {
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundStyle(question.guess)
+                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                    .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
+                    .frame(height: geometry.size.height * 0.25)
+                
+                Picker("", selection: $pickerType) {
+                    Text("Hue")
+                        .tag(1)
+                    
+                    Text("Spectrum")
+                        .tag(2)
+                }
+                .pickerStyle(.segmented)
+                
+                ZStack {
+                    ColorPicker(color: $question.guess)
+                        .offset(x: pickerType == 1 ? 0 : -UIScreen.main.bounds.width)
+                    
+                    SpectrumColorPicker(color: $question.guess)
+                        .offset(x: pickerType != 1 ? 0 : UIScreen.main.bounds.width)
+                }
+                .animation(.default, value: pickerType)
+            }
         }
     }
     
     private var resultsView: some View {
         VStack(spacing: 10) {
             if game.isPlusMode {
-                makeColorLabel(for: question.guess, title: "Your Guess", score: nil, scoreTitle: nil)
+                makeColorLabel(for: question.guess, title: "Your Guess", score: question.scoreToMyAnswer, scoreTitle: "Score to my guess")
                 
-                makeColorLabel(for: question.myAnswer, title: "My Answer", score: question.myScoreToCorrectAnswer, scoreTitle: "My score to correct color")
+                makeColorLabel(for: question.myAnswer, title: "My Guess", score: question.myScoreToCorrectAnswer, scoreTitle: "My score to actual color")
                 
                 DisclosureGroup(isExpanded: $isDisclosureGroupOpen) {
                     VStack(alignment: .leading) {
-                        Text(question.notes)
+                        Text(.init(question.notes))
                     }
                 } label: {
                     Text("My thoughts/notes: ")
@@ -44,7 +69,7 @@ struct QuestionView: View {
                 .tint(ForegroundStyle.foreground)
                 .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
                 
-                makeColorLabel(for: question.answer, title: "Actual Color", score: question.scoreToCorrectAnswer, scoreTitle: "Your score to correct color")
+                makeColorLabel(for: question.answer, title: "Actual Color", score: question.scoreToCorrectAnswer, scoreTitle: "Your score to actual color")
             } else {
                 makeColorLabel(for: question.guess, title: "Your Guess", score: nil, scoreTitle: nil)
                 
@@ -100,7 +125,6 @@ struct QuestionView: View {
             }
     }
 }
-
 
 #Preview("Regular") {
     let game = Game(mode: .hard, isPlusMode: false)

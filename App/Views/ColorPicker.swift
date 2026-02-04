@@ -5,111 +5,133 @@ struct ColorPicker: View {
     
     @Binding var color: Color
     
-    @State private var hsb: (hue: Double, saturation: Double, brightness: Double)
+    @State private var hue: Double
+    @State private var saturation: Double
+    @State private var brightness: Double
+    @State private var isChangingHue = false
+    @State private var isChangingSaturationAndBrightness = false
     
     init(color: Binding<Color>) {
         _color = color
-        self.hsb = Self.getHSB(for: color.wrappedValue)
+        let (hue, saturation, brightness) = color.wrappedValue.getHSB()
+        self.hue = hue
+        self.saturation = saturation
+        self.brightness = brightness
     }
     
     var body: some View {
         GeometryReader { outerGeometry in
-            VStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundStyle(color)
-                    .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
-                    .frame(height: outerGeometry.size.height * 0.7)
-                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+            VStack(spacing: 20) {
+                saturationAndHuePicker
+                    .frame(height: outerGeometry.size.height * 0.75)
                 
-                makeSlider(gradient: saturationAndBrightnessGradient,
-                           xPositionRatio: getSatBrightPosition()) { _, widthPercentage in
-                    let newColor =
-                        if widthPercentage < 0.5 {
-                            Color(hue: hsb.hue, saturation: widthPercentage * 2, brightness: 1)
-                        } else {
-                            Color(hue: hsb.hue, saturation: 1, brightness: 1 - (widthPercentage - 0.5) * 2)
-                        }
-                            
-                    let newHSB = Self.getHSB(for: newColor)
-                    if abs(self.hsb.hue - newHSB.hue) > 0.01 {
-                        return self.color
-                    }
-                            
-                    return newColor
-                }
-                
-                makeSlider(gradient: hueGradient,
-                           xPositionRatio: hsb.hue) { _, widthPercentage in
-                    Color(hue: widthPercentage, saturation: hsb.saturation, brightness: hsb.brightness)
-                }
+                hueSlider
             }
         }
+        .onChange(of: hue) {
+            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
+        }
+        .onChange(of: saturation) {
+            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
+        }
+        .onChange(of: brightness) {
+            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
+        }
         .onChange(of: color) {
-            hsb = Self.getHSB(for: color)
+            if isChangingHue || isChangingSaturationAndBrightness {
+                return
+            }
+            
+            let (hue, saturation, brightness) = color.getHSB()
+            self.hue = hue
+            self.saturation = saturation
+            self.brightness = brightness
         }
     }
     
-    private func makeSlider(gradient: Gradient, xPositionRatio: Double, onDragChange: @escaping (DragGesture.Value, Double) -> Color) -> some View {
+    private var saturationAndHuePicker: some View {
+        GeometryReader { geometry in
+            ZStack {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(
+                        LinearGradient(gradient: Gradient(colors: [
+                            Color(hue: hue, saturation: 0, brightness: 1),
+                            Color(hue: hue, saturation: 1, brightness: 1)
+                        ]),
+                        startPoint: .leading,
+                        endPoint: .trailing)
+                    )
+                    .overlay(
+                        LinearGradient(gradient: Gradient(stops: [
+                            .init(color: Color.white, location: 0.0),
+                            .init(color: Color(white: 0.6, opacity: 0.5), location: 0.4),
+                            .init(color: Color(white: 0.05), location: 1.0)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom)
+                            .blendMode(.multiply)
+                            .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    )
+                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                    .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { gesture in
+                                isChangingSaturationAndBrightness = true
+                                
+                                withAnimation(.linear(duration: 0.1)) {
+                                    self.saturation = min(max(gesture.location.x / geometry.size.width, 0), 1)
+                                    self.brightness = 1 - min(max(gesture.location.y / geometry.size.height, 0), 1)
+                                }
+                            }
+                            .onEnded { _ in
+                                isChangingSaturationAndBrightness = false
+                            }
+                    )
+                
+                Circle()
+                    .fill(color)
+                    .frame(width: 20, height: 20)
+                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                    .scaleEffect(isChangingSaturationAndBrightness ? 1.75 : 1)
+                    .animation(.linear(duration: 0.25), value: isChangingSaturationAndBrightness)
+                    .position(x: saturation * geometry.size.width,
+                              y: (1 - brightness) * geometry.size.height)
+            }
+        }
+    }
+    
+    private var hueSlider: some View {
         GeometryReader { geometry in
             RoundedRectangle(cornerRadius: 20)
-                .foregroundStyle(LinearGradient(gradient: gradient, startPoint: .leading, endPoint: .trailing))
-                .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
+                .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .leading, endPoint: .trailing))
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { gesture in
-                            let widthPercentage = gesture.location.x / geometry.size.width
-                            if widthPercentage < 0 || widthPercentage >= 1 {
+                            isChangingHue = true
+                            
+                            if gesture.location.x < 0 || gesture.location.x > geometry.size.width {
                                 return
                             }
                             
-                            let newColor = onDragChange(gesture, widthPercentage)
-                            
                             withAnimation(.linear(duration: 0.1)) {
-                                self.color = newColor
-                                self.hsb = Self.getHSB(for: newColor)
+                                hue = gesture.location.x / geometry.size.width
                             }
+                        }
+                        .onEnded { _ in
+                            isChangingHue = false
                         }
                 )
                 .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
                 .overlay {
                     RoundedRectangle(cornerRadius: 5)
                         .stroke(style: .init(lineWidth: 3))
                         .frame(width: 10)
-                        .position(x: xPositionRatio * geometry.size.width, y: geometry.size.height / 2)
+                        .position(x: hue * geometry.size.width, y: geometry.size.height / 2)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 }
         }
-    }
-    
-    private var saturationAndBrightnessGradient: Gradient {
-        return Gradient(colors: stride(from: 0, to: 0.5, by: 0.01).map {
-            Color(hue: hsb.hue, saturation: $0, brightness: 1)
-        } + stride(from: 0.5, to: 1, by: 0.01).map {
-            Color(hue: hsb.hue, saturation: $0, brightness: 1)
-        } + stride(from: 0, to: 0.5, by: 0.01).map {
-            Color(hue: hsb.hue, saturation: 1, brightness: 1 - $0)
-        } + stride(from: 0.5, to: 1, by: 0.01).map {
-            Color(hue: hsb.hue, saturation: 1, brightness: 1 - $0)
-        })
-    }
-    
-    private func getSatBrightPosition() -> Double {
-        if hsb.saturation == 1 {
-            return 0.5 + (1 - hsb.brightness) / 2
-        } else {
-            return hsb.saturation / 2
-        }
-    }
-    
-    private static func getHSB(for color: Color) -> (hue: Double, saturation: Double, brightness: Double) {
-        let uiColor = UIColor(color)
-        var hue: CGFloat = 0
-        var saturation: CGFloat = 0
-        var brightness: CGFloat = 0
-        var alpha: CGFloat = 0
-        uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
-        
-        return (hue, saturation, brightness)
     }
 }
 

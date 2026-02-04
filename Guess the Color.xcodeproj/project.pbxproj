@@ -17,6 +17,7 @@
 		309C11D12F31092100EFD143 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11CE2F31092100EFD143 /* Game.swift */; };
 		309C11D22F31092100EFD143 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11CF2F31092100EFD143 /* Question.swift */; };
 		309C11D72F3232A600EFD143 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11D62F3232A600EFD143 /* Results.swift */; };
+		309C11D92F33C3F200EFD143 /* SpectrumColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		309C11CE2F31092100EFD143 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		309C11CF2F31092100EFD143 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		309C11D62F3232A600EFD143 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
+		309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumColorPicker.swift; sourceTree = "<group>"; };
 		30A124532F2E539900AC99A0 /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -80,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				309C11C22F31091100EFD143 /* ColorPicker.swift */,
+				309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */,
 				309C11C02F31091100EFD143 /* UIKitColorPicker.swift */,
 			);
 			path = Views;
@@ -182,6 +185,7 @@
 				309C11C92F31091100EFD143 /* App.swift in Sources */,
 				309C11CA2F31091100EFD143 /* UIKitColorPicker.swift in Sources */,
 				309C11D22F31092100EFD143 /* Question.swift in Sources */,
+				309C11D92F33C3F200EFD143 /* SpectrumColorPicker.swift in Sources */,
 				309C11CC2F31091100EFD143 /* ColorPicker.swift in Sources */,
 				309C11D72F3232A600EFD143 /* Results.swift in Sources */,
 			);

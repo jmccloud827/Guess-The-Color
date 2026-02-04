@@ -43,54 +43,106 @@ struct GameView: View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
                 VStack(spacing: 0) {
-                    HStack {
-                        Text(game.isComplete ? game.isPlusMode ? "Average score to my guess: " : "Average Score: " : "Name: ")
-                            .bold()
+                    Group {
+                        HStack {
+                            Text("Name: ")
+                                .bold()
                             
-                        Text(game.isComplete ? game.averageScoreToMyAnswer.formatted(decimalFormat) : game.currentQuestion.name)
-                            .font(.title)
-                            .bold()
-                            .contentTransition(.numericText())
+                            Text(game.currentQuestion.name)
+                                .font(.title)
+                                .bold()
+                                .contentTransition(.numericText())
+                        }
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .frame(maxWidth: .infinity, alignment: game.currentQuestion.isAnswered && !game.isPlusMode ? .leading : .center)
+                        .frame(height: game.isComplete ? 0 : nil)
+                        .offset(y: game.isComplete ? -100 : 0)
+                        .clipped()
+                        
+                        Group {
+                            if game.isPlusMode {
+                                VStack(spacing: 0) {
+                                    HStack {
+                                        Text("Average score to my guess: ")
+                                            .bold()
+                                        
+                                        Text(game.averageScoreToMyAnswer.formatted(decimalFormat))
+                                            .font(.title)
+                                            .bold()
+                                            .contentTransition(.numericText())
+                                    }
+                                    
+                                    Gauge(value: game.averageScoreToMyAnswer) {
+                                        Text("")
+                                    }
+                                    .tint(hueGradient)
+                                    .gaugeStyle(.accessoryLinear)
+                                }
+                            } else {
+                                VStack(spacing: 0) {
+                                    HStack {
+                                        Text("Score: ")
+                                            .bold()
+                                        
+                                        Text(game.averageScoreToCorrectAnswer.formatted(decimalFormat))
+                                            .font(.title)
+                                            .bold()
+                                            .contentTransition(.numericText())
+                                    }
+                                    
+                                    Gauge(value: game.averageScoreToCorrectAnswer) {
+                                        Text("")
+                                    }
+                                    .tint(hueGradient)
+                                    .gaugeStyle(.accessoryLinear)
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: game.isComplete ? .leading : .center)
+                        .frame(height: !game.isComplete ? 0 : nil)
+                        .offset(x: !game.isComplete ? -100 : 0)
+                        .clipped()
                     }
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
-                    .frame(maxWidth: .infinity, alignment: game.isComplete || game.currentQuestion.isAnswered ? .leading : .center)
-                    
-                    if game.isComplete {
-                        Gauge(value: game.averageScoreToMyAnswer) {
-                            Text("")
-                        }
-                        .tint(hueGradient)
-                        .gaugeStyle(.accessoryLinear)
-                        .padding(.top, 5)
-                    }
                 }
                 
-                HStack {
-                    Text("\(game.isPlusMode ? "Score to my guess" : "Score"): ")
-                        .bold()
+                if !game.isPlusMode {
+                    HStack {
+                        Text("Score: ")
+                            .bold()
                         
-                    Text((game.isPlusMode ? game.currentQuestion.scoreToMyAnswer : game.currentQuestion.scoreToCorrectAnswer).formatted(decimalFormat))
-                        .contentTransition(.numericText())
-                        .font(.title3)
-                        .bold()
-                        .minimumScaleFactor(0.7)
+                        Text(game.currentQuestion.scoreToCorrectAnswer.formatted(decimalFormat))
+                            .contentTransition(.numericText())
+                            .font(.title3)
+                            .bold()
+                            .minimumScaleFactor(0.7)
+                    }
+                    .frame(height: game.isComplete || !game.currentQuestion.isAnswered ? 0 : nil)
+                    .offset(y: game.isComplete || !game.currentQuestion.isAnswered ? 100 : 0)
+                    .clipped()
                 }
-                .frame(height: game.isComplete || !game.currentQuestion.isAnswered ? 0 : nil)
-                .offset(y: game.isComplete || !game.currentQuestion.isAnswered ? 100 : 0)
-                .clipped()
                 
                 if game.isPlusMode {
-                    Text("Average score to correct color: ")
+                    Text("Average score to actual color: ")
                         .padding(.top, 5)
                         .padding(.vertical, 5)
                         .frame(height: game.isComplete ? nil : 0)
                         .offset(x: game.isComplete ? 0 : -100)
                         .clipped()
                     
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 0) {
                         HStack {
-                            Text("You: \(game.averageScoreToCorrectAnswer.formatted(decimalFormat))")
+                            HStack {
+                                Text("You: ")
+                                
+                                Text(game.averageScoreToCorrectAnswer.formatted(decimalFormat))
+                                    .bold()
+                                    .contentTransition(.numericText())
+                            }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                                 
                             Gauge(value: game.averageScoreToCorrectAnswer) {
                                 Text("")
@@ -103,7 +155,15 @@ struct GameView: View {
                         .clipped()
                             
                         HStack {
-                            Text("Me: \(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))")
+                            HStack {
+                                Text("Me: ")
+                                
+                                Text(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))
+                                    .bold()
+                                    .contentTransition(.numericText())
+                            }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                                 
                             Gauge(value: game.myAverageScoreToCorrectAnswer) {
                                 Text("")
@@ -120,7 +180,7 @@ struct GameView: View {
             .padding(.vertical)
                 
             Group {
-                if !game.isComplete {
+                if !game.isComplete && !game.isPlusMode {
                     Gauge(value: game.currentQuestion.myScoreToCorrectAnswer) {
                         Text("")
                     }
@@ -135,6 +195,7 @@ struct GameView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.25), radius: 1)
         .padding(.bottom)
         .padding(.horizontal)
     }
@@ -150,6 +211,7 @@ struct GameView: View {
                     .foregroundStyle(.bar)
             }
             .glassEffect(.regular.interactive())
+            .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.25), radius: 1)
             .padding(.top)
             .padding(.horizontal)
             .onTapGesture {
@@ -157,22 +219,22 @@ struct GameView: View {
                     dismiss()
                 } else {
                     if game.currentQuestion.isAnswered {
-                        withAnimation {
+                        withAnimation(.default) {
                             game.nextQuestion()
-                        } completion: {
-                            if game.isComplete {
-                                withAnimation {
-                                    game.calculateAverageScores()
-                                }
+                        }
+                        
+                        if game.isComplete {
+                            withAnimation(.easeOut(duration: 0.5).delay(0.75)) {
+                                game.calculateAverageScores()
                             }
                         }
                     } else {
-                        withAnimation {
+                        withAnimation(.default) {
                             game.currentQuestion.isAnswered = true
-                        } completion: {
-                            withAnimation {
-                                game.currentQuestion.calculateScores()
-                            }
+                        }
+                        
+                        withAnimation(.easeOut(duration: 0.5).delay(0.75)) {
+                            game.currentQuestion.calculateScores()
                         }
                     }
                 }

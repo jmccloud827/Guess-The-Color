@@ -10,57 +10,52 @@ struct Results: View {
                 ForEach(game.questions.enumerated(), id: \.offset) { _, question in
                     VStack {
                         HStack {
-                            HStack(spacing: 0) {
-                                Text("Name: ")
-                                    .bold()
+                            VStack(alignment: .leading) {
+                                HStack(spacing: 0) {
+                                    Text("Name: ")
+                                        .bold()
+                                    
+                                    Text(question.name)
+                                        .foregroundStyle(question.answer)
+                                        .font(.title2)
+                                        .bold()
+                                }
                                 
-                                Text(question.name)
-                                    .foregroundStyle(question.answer)
-                                    .font(.title2)
+                                HStack(spacing: 0) {
+                                    Text(game.isPlusMode ? "Score to my guess: " : "Score: ")
+                                        
+                                    Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(decimalFormat))
+                                        .bold()
+                                        .contentTransition(.numericText())
+                                }
                             }
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
-                            .frame(maxWidth: .infinity)
-                            .glassEffect(.regular.interactive())
+                            
+                            Spacer()
+                            
+                            Gauge(value: game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer) {
+                                Text("")
+                            }
+                            .tint(question.answer)
+                            .gaugeStyle(.accessoryCircular)
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+                        .padding(.bottom, 5)
                         
                         HStack {
                             VStack(alignment: .leading, spacing: 0) {
-                                VStack(spacing: 0) {
-                                    HStack {
-                                        Text(game.isPlusMode ? "Score to my guess: " : "Score: ")
-                                            .bold()
-                                        
-                                        Spacer()
-                                            
-                                        Text(question.scoreToMyAnswer.formatted(decimalFormat))
-                                            .font(.title)
-                                            .bold()
-                                            .contentTransition(.numericText())
-                                    }
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
-                                    
-                                    Gauge(value: game.averageScoreToMyAnswer) {
-                                        Text("")
-                                    }
-                                    .tint(question.answer)
-                                    .gaugeStyle(.accessoryLinear)
-                                    .padding(.top, 5)
-                                }
-                                
                                 if game.isPlusMode {
-                                    Text("Average score to correct color: ")
-                                        .padding(.top, 5)
-                                        .padding(.vertical, 5)
+                                    Text("Score to actual color: ")
                                     
-                                    VStack(alignment: .leading) {
+                                    VStack(alignment: .leading, spacing: 0) {
                                         HStack {
-                                            Text("You: \(game.averageScoreToCorrectAnswer.formatted(decimalFormat))")
+                                            Text("You: \(question.scoreToCorrectAnswer.formatted(decimalFormat))")
                                                 
-                                            Gauge(value: game.averageScoreToCorrectAnswer) {
+                                            Gauge(value: question.scoreToCorrectAnswer) {
                                                 Text("")
                                             }
                                             .tint(colorScheme == .light ? .black : .white)
@@ -68,9 +63,9 @@ struct Results: View {
                                         }
                                             
                                         HStack {
-                                            Text("Me: \(game.myAverageScoreToCorrectAnswer.formatted(decimalFormat))")
+                                            Text("Me: \(question.myScoreToCorrectAnswer.formatted(decimalFormat))")
                                                 
-                                            Gauge(value: game.myAverageScoreToCorrectAnswer) {
+                                            Gauge(value: question.myScoreToCorrectAnswer) {
                                                 Text("")
                                             }
                                             .tint(colorScheme == .light ? .black : .white)
@@ -85,10 +80,10 @@ struct Results: View {
                             makeColorLabel(for: question.guess, title: game.isPlusMode ? "Your Guess" : "Guess")
                             
                             if game.isPlusMode {
-                                makeColorLabel(for: question.myAnswer, title: "My Answer")
+                                makeColorLabel(for: question.myAnswer, title: "My Guess")
                             }
                             
-                            makeColorLabel(for: question.answer, title: game.isPlusMode ? "Correct Color" : "Answer")
+                            makeColorLabel(for: question.answer, title: game.isPlusMode ? "Actual Color" : "Answer")
                         }
                     }
                     .padding(.horizontal)
@@ -111,9 +106,9 @@ struct Results: View {
                     .multilineTextAlignment(.center)
                     .padding(5)
                     .frame(maxWidth: .infinity)
-                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                    .glassEffect(.regular.interactive())
                     .padding(10)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
             }
             .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
     }

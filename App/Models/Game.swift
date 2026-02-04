@@ -19,6 +19,9 @@ import SwiftUI
             
             case .hard:
                 Self.hardColors
+                
+            case .impossible:
+                Self.impossibleColors
             }
         
         let questions: [Question] = colors
@@ -55,14 +58,16 @@ import SwiftUI
         let notes: String
     }
     
-    enum Mode {
+    enum Mode: CaseIterable {
         case regular
         case hard
+        case impossible
         
         var title: String {
             switch self {
             case .regular: "Regular"
             case .hard: "Hard"
+            case .impossible: "Impossible"
             }
         }
         
@@ -70,20 +75,23 @@ import SwiftUI
             switch self {
             case .regular: "Simple colors found on the color wheel, nothing too tricky here👍."
             case .hard: "Ya know Crayola crayons🖍️? Yeah those types of names."
+            case .impossible: "Sherwin Williams paint👨‍🎨 colors. Good luck buckaroo!"
             }
         }
         
         var gaugeColor: SwiftUI.Color {
             switch self {
             case .regular: .green
-            case .hard: .red
+            case .hard: .yellow
+            case .impossible: .red
             }
         }
         
         var gaugeValue: Double {
             switch self {
             case .regular: 1 / 3
-            case .hard: 1 / 2
+            case .hard: 2 / 3
+            case .impossible: 1
             }
         }
     }
@@ -177,7 +185,7 @@ extension Game {
         .init(answer: .init(red: 227, green: 37, blue: 107),
               name: "Razzmatazz",
               myAnswer: .init(red: 194, green: 62, blue: 39),
-              notes: "In my head I say this like I'm saying the word Razzberry but in the middle of it I get electrocuted. Razz-__matazz__. Blue-ish red it is."),
+              notes: "In my head I say this like I'm saying the word Razzberry but in the middle of it I get electrocuted. Razz-*matazz*. Blue-ish red it is."),
         .init(answer: .init(red: 0, green: 20, blue: 168),
               name: "Zaffre",
               myAnswer: .init(red: 45, green: 89, blue: 128),
@@ -193,10 +201,54 @@ extension Game {
     ]
     
     static let impossibleColors: [Color] = [
-        .init(answer: .init(red: 127, green: 255, blue: 0),
-              name: "Chartreuse",
-              myAnswer: .init(red: 0, green: 128, blue: 128),
-              notes: "No idea what this is but I like saying the name of it.")
+        .init(answer: .init(red: 129, green: 152, blue: 174),
+              name: "Dryer's Woad",
+              myAnswer: .init(red: 219, green: 213, blue: 186),
+              notes: "Dryer as in for clothes? My dryer has a hard time with comforters so I'll go with the color of mine."),
+        .init(answer: .init(red: 131, green: 154, blue: 138),
+              name: "Parisian Patina",
+              myAnswer: .init(red: 216, green: 235, blue: 7),
+              notes: "How am I supposed to know this? Can I get a hint?"),
+        .init(answer: .init(red: 246, green: 202, blue: 69),
+              name: "Forsythia",
+              myAnswer: .init(red: 14, green: 226, blue: 237),
+              notes: "I'm reading this like 'For Sythia'. Like a battle cry and maybe Sythia is the name of a place or person. Teal"),
+        .init(answer: .init(red: 167, green: 134, blue: 89),
+              name: "Chamois",
+              myAnswer: .init(red: 237, green: 223, blue: 202),
+              notes: "Sounds french. Not to be stereotypical but I'm feeling the color of a baguette."),
+        .init(answer: .init(red: 246, green: 201, blue: 77),
+              name: "Cheerful",
+              myAnswer: .init(red: 15, green: 250, blue: 84),
+              notes: "An emotion? Well, mad is red and blue is sad. Maybe happy is green?"),
+        .init(answer: .init(red: 129, green: 182, blue: 197),
+              name: "Nautilus",
+              myAnswer: .init(red: 91, green: 104, blue: 227),
+              notes: "Pretty sure a Nautilus is an ancient sea creature? Has to be blue."),
+        .init(answer: .init(red: 112, green: 105, blue: 149),
+              name: "Forget-Me-Not",
+              myAnswer: .init(red: 224, green: 120, blue: 227),
+              notes: "Is the color asking me to not forget it? Sorry buddy I've already ejected you from my brain and I dub you pink for the irony."),
+        .init(answer: .init(red: 186, green: 126, blue: 148),
+              name: "Cyclamen",
+              myAnswer: .init(red: 149, green: 114, blue: 150),
+              notes: "Is this a man that has the powers of a bicycle? My bike is purple (Don't make fun of me it's my mom's old bike, and she's dead)."),
+        .init(answer: .init(red: 208, green: 125, blue: 103),
+              name: "Rejuvenate",
+              myAnswer: .init(red: 175, green: 202, blue: 237),
+              notes: "I once saw a bottle of shampoo named this and it was a light blue color so I'll send it."),
+        .init(answer: .init(red: 114, green: 139, blue: 166),
+              name: "Scanda",
+              myAnswer: .black,
+              notes: ""),
+        .init(answer: .init(red: 125, green: 119, blue: 140),
+              name: "Mythical",
+              myAnswer: .black,
+              notes: ""),
+        .init(answer: .init(red: 106, green: 100, blue: 92),
+              name: "Porpoise",
+              myAnswer: .init(red: 236, green: 108, blue: 133),
+              notes: "A pontificating porpoise ponders polytheism palpably. Boom alliteration.")
     ]
 }
 

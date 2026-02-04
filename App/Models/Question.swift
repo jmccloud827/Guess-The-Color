@@ -5,7 +5,7 @@ import SwiftUI
     let name: String
     let myAnswer: Color
     let notes: String
-    var guess: Color = .init(hue: 0, saturation: 1, brightness: 0.9999999)
+    var guess: Color = .init(hue: 0, saturation: 0.5, brightness: 0.5)
     var scoreToMyAnswer = 0.0
     var scoreToCorrectAnswer = 0.0
     var myScoreToCorrectAnswer = 0.0
@@ -25,21 +25,48 @@ import SwiftUI
     }
     
     private static func getScore(guess: Color, answer: Color) -> Double {
-        let guessRGB = guess.getRGB()
-        let answerRGB = answer.getRGB()
+//        let guessRGB = guess.getRGB()
+//        let answerRGB = answer.getRGB()
+//        
+//        let redPercent = 1 - abs(answerRGB.red - guessRGB.red)
+//        let greenPercent = 1 - abs(answerRGB.green - guessRGB.green)
+//        let bluePercent = 1 - abs(answerRGB.blue - guessRGB.blue)
+//        
+//        let average = (redPercent + greenPercent + bluePercent) / 3
+//        
+//        return average
         
-        let redPercent = 1 - abs(answerRGB.red - guessRGB.red)
-        let greenPercent = 1 - abs(answerRGB.green - guessRGB.green)
-        let bluePercent = 1 - abs(answerRGB.blue - guessRGB.blue)
+        let guessHSB = guess.getHSB()
+        let answerHSB = answer.getHSB()
         
-        let average = (redPercent + greenPercent + bluePercent) / 3
+        let saturationPercent = 1 - abs(answerHSB.saturation - guessHSB.saturation)
+        let brightnessPercent = 1 - abs(answerHSB.brightness - guessHSB.brightness)
+        
+        let worstAnswerHue =
+        if answerHSB.hue < 0.5 {
+            answerHSB.hue + 0.5
+        } else {
+            answerHSB.hue - 0.5
+        }
+        
+        let worstDifference = abs(guessHSB.hue - worstAnswerHue)
+        let bestDifference = abs(guessHSB.hue - answerHSB.hue)
+        
+        let huePercent =
+        if worstDifference < bestDifference {
+            worstDifference * 2
+        } else {
+            1 - bestDifference * 2
+        }
+        
+        let average = huePercent * 0.7 + saturationPercent * 0.15 + brightnessPercent * 0.15
         
         return average
     }
 }
 
 extension Color {
-    func getRGB() -> (red: CGFloat, green: CGFloat, blue: CGFloat) {
+    func getRGB() -> (red: Double, green: Double, blue: Double) {
         let uiColor = UIColor(self)
         var red: CGFloat = 0
         var green: CGFloat = 0
@@ -48,5 +75,16 @@ extension Color {
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
         return (red, green, blue)
+    }
+    
+    func getHSB() -> (hue: Double, saturation: Double, brightness: Double) {
+        let uiColor = UIColor(self)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        
+        return (hue, saturation, brightness)
     }
 }
