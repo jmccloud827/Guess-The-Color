@@ -16,12 +16,12 @@ struct App: SwiftUI.App {
     return Image(systemName: "paintpalette")
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .foregroundStyle(.black)
+        .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .trailing, endPoint: .topLeading))
             .frame(width: 250, height: 250)
         .padding()
         .padding()
         .padding(44)
         .background {
-            LinearGradient(gradient: hueGradient, startPoint: .trailing, endPoint: .topLeading)
+            Color.black
         }
 }

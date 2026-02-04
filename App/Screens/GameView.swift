@@ -78,16 +78,12 @@ struct GameView: View {
 
 #Preview("Regular") {
     let game = Game(mode: .hard, isPlusMode: false)
-    game.questions.prefix(11).forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
-    game.calculateAverageScores()
     
     return GameView(game: game)
 }
 
 #Preview("Plus Mode") {
     let game = Game(mode: .hard, isPlusMode: true)
-    game.questions.prefix(11).forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
-    game.calculateAverageScores()
     
     return GameView(game: game)
 }
