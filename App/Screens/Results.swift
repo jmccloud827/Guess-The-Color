@@ -5,16 +5,14 @@ struct Results: View {
     @Environment(Game.self) var game
     
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHGrid(rows: game.isPlusMode ? [.init()] : [.init(), .init()], spacing: 15) {
+        ScrollView {
+            VStack(spacing: 15) {
                 ForEach(game.questions.enumerated(), id: \.offset) { _, question in
                     makeSection(for: question)
                 }
             }
-            .scrollTargetLayout()
+            .padding(.horizontal)
         }
-        .scrollTargetBehavior(.viewAligned)
-        .safeAreaPadding(.horizontal, 40)
         .safeAreaInset(edge: .top) {
             topInset
         }
@@ -46,7 +44,7 @@ struct Results: View {
                 game.makeScoreToActualColorSection(title: "Score to actual color: ", you: question.scoreToCorrectAnswer, me: question.myScoreToCorrectAnswer)
             }
             
-            VStack {
+            HStack {
                 question.guess.makeLabel(title: game.isPlusMode ? "Your Guess" : "Guess", isSmall: true)
                 
                 if game.isPlusMode {
@@ -55,14 +53,12 @@ struct Results: View {
                 
                 question.answer.makeLabel(title: game.isPlusMode ? "Actual Color" : "Answer", isSmall: true)
             }
+            .frame(height: 100)
         }
         .padding(.horizontal)
         .padding(.vertical, 20)
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
         .addShadow(opacity: 0.25)
-        .containerRelativeFrame(.horizontal) { length, _ in
-            length
-        }
     }
     
     private func makeAverageScoreLabel(title: String, score: Double) -> some View {
@@ -102,4 +98,12 @@ struct Results: View {
     game.calculateAverageScores()
     
     return GameView(game: game)
+}
+
+#Preview("Plus Mode") {
+    let game = Game(mode: .hard, isPlusMode: true)
+    game.questions.forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
+    game.calculateAverageScores()
+    
+    return GameView2(game: game)
 }
