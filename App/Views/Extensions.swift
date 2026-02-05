@@ -5,6 +5,7 @@ extension View {
         self
             .frame(maxWidth: .infinity)
             .padding(.horizontal)
+            .clipped()
             .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
             .addShadow(opacity: 0.25)
             .padding(.bottom)
@@ -93,7 +94,6 @@ extension Double {
             Gauge(value: self) {
                 Text("")
             }
-            .tint(Environment(\.colorScheme).wrappedValue == .light ? .black : .white)
             .gaugeStyle(.accessoryLinear)
         }
     }
@@ -127,36 +127,54 @@ private struct ScoreLabelWrapper: View {
                         .contentTransition(.numericText())
                 }
                 .frame(maxWidth: .infinity, alignment: question.isAnswered ? .leading : .center)
-                
-                HStack(spacing: 0) {
-                    Text(game.isPlusMode ? "Score to my guess: " : "Score: ")
+              
+                if question.isAnswered {
+                    HStack(alignment: .bottom, spacing: 0) {
+                        Text(game.isPlusMode ? "Score to my guess: " : "Score: ")
+                            .padding(.top, 3)
                         
-                    Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(percentFormat))
-                        .bold()
-                        .contentTransition(.numericText())
+                        Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(percentFormat))
+                            .bold()
+                            .contentTransition(.numericText())
+                     }
+                    .padding(.top, 3)
+                    .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)),
+                                            removal: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top))))
                 }
-                .padding(.top, 3)
-                .frame(height: !question.isAnswered ? 0 : nil)
-                .offset(x: !question.isAnswered ? -100 : 0)
-                .clipped()
+                
+                Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(percentFormat))
+                    .opacity(0.0)
+                    .frame(height: 0.0)
             }
             .lineLimit(1)
             .minimumScaleFactor(0.5)
             
             Spacer()
             
-            Gauge(value: game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer) {
-                Text("")
+            if question.isAnswered {
+                Gauge(value: game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer) {
+                    Text("")
+                }
+                .tint(question.answer)
+                .gaugeStyle(.accessoryCircular)
+                .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
+                                        removal: .move(edge: .trailing).combined(with: .opacity)))
             }
-            .tint(question.answer)
-            .gaugeStyle(.accessoryCircular)
-            .frame(width: !question.isAnswered ? 0 : nil)
-            .frame(height: !question.isAnswered ? 0 : nil)
-            .offset(x: !question.isAnswered ? 100 : 0)
-            .clipped()
         }
-        .padding(question.isAnswered ? 10 : 0)
+        .padding(question.isAnswered && hasGlassEffect ? 10 : 0)
         .frame(maxWidth: .infinity)
         .glassEffect(question.isAnswered && hasGlassEffect ? .regular.interactive() : .identity, in: RoundedRectangle(cornerRadius: 20))
     }
+}
+
+#Preview("Regular") {
+    let game = Game(mode: .hard, isPlusMode: false)
+    
+    return GameView(game: game)
+}
+
+#Preview("Plus Mode") {
+    let game = Game(mode: .hard, isPlusMode: true)
+    
+    return GameView(game: game)
 }

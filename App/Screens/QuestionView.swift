@@ -61,11 +61,12 @@ struct QuestionView: View {
             VStack(alignment: .leading, spacing: 0) {
                 question.makeScoreLabel(hasGlassEffect: game.isPlusMode)
                 
-                if game.isPlusMode {
+                if game.isPlusMode && question.isAnswered {
                     game.makeScoreToActualColorSection(title: "Score to actual color: ", you: question.scoreToCorrectAnswer, me: question.myScoreToCorrectAnswer)
-                        .frame(height: !question.isAnswered ? 0 : nil)
-                        .offset(x: !question.isAnswered ? -100 : 0)
-                        .clipped()
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)).combined(with: .opacity),
+                            removal: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)).combined(with: .opacity)
+                        ))
                 }
             }
             .padding(.vertical)
