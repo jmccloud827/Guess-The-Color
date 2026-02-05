@@ -12,12 +12,13 @@
 		309C11C72F31091100EFD143 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11BB2F31091100EFD143 /* GameView.swift */; };
 		309C11C82F31091100EFD143 /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11BC2F31091100EFD143 /* QuestionView.swift */; };
 		309C11C92F31091100EFD143 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11BE2F31091100EFD143 /* App.swift */; };
-		309C11CA2F31091100EFD143 /* UIKitColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11C02F31091100EFD143 /* UIKitColorPicker.swift */; };
-		309C11CC2F31091100EFD143 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11C22F31091100EFD143 /* ColorPicker.swift */; };
+		309C11CC2F31091100EFD143 /* HueColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11C22F31091100EFD143 /* HueColorPicker.swift */; };
 		309C11D12F31092100EFD143 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11CE2F31092100EFD143 /* Game.swift */; };
 		309C11D22F31092100EFD143 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11CF2F31092100EFD143 /* Question.swift */; };
 		309C11D72F3232A600EFD143 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11D62F3232A600EFD143 /* Results.swift */; };
 		309C11D92F33C3F200EFD143 /* SpectrumColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */; };
+		309C11DB2F34D2BF00EFD143 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */; };
+		309C11DD2F34DB2C00EFD143 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11DC2F34DB2C00EFD143 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,12 +27,13 @@
 		309C11BC2F31091100EFD143 /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
 		309C11BE2F31091100EFD143 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		309C11BF2F31091100EFD143 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		309C11C02F31091100EFD143 /* UIKitColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitColorPicker.swift; sourceTree = "<group>"; };
-		309C11C22F31091100EFD143 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		309C11C22F31091100EFD143 /* HueColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueColorPicker.swift; sourceTree = "<group>"; };
 		309C11CE2F31092100EFD143 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		309C11CF2F31092100EFD143 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		309C11D62F3232A600EFD143 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumColorPicker.swift; sourceTree = "<group>"; };
+		309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		309C11DC2F34DB2C00EFD143 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		30A124532F2E539900AC99A0 /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -81,9 +83,10 @@
 		309C11D52F31094F00EFD143 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				309C11C22F31091100EFD143 /* ColorPicker.swift */,
+				309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */,
+				309C11C22F31091100EFD143 /* HueColorPicker.swift */,
 				309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */,
-				309C11C02F31091100EFD143 /* UIKitColorPicker.swift */,
+				309C11DC2F34DB2C00EFD143 /* Extensions.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -181,12 +184,13 @@
 				309C11D12F31092100EFD143 /* Game.swift in Sources */,
 				309C11C62F31091100EFD143 /* GameSelection.swift in Sources */,
 				309C11C72F31091100EFD143 /* GameView.swift in Sources */,
+				309C11DD2F34DB2C00EFD143 /* Extensions.swift in Sources */,
 				309C11C82F31091100EFD143 /* QuestionView.swift in Sources */,
+				309C11DB2F34D2BF00EFD143 /* ColorPicker.swift in Sources */,
 				309C11C92F31091100EFD143 /* App.swift in Sources */,
-				309C11CA2F31091100EFD143 /* UIKitColorPicker.swift in Sources */,
 				309C11D22F31092100EFD143 /* Question.swift in Sources */,
 				309C11D92F33C3F200EFD143 /* SpectrumColorPicker.swift in Sources */,
-				309C11CC2F31091100EFD143 /* ColorPicker.swift in Sources */,
+				309C11CC2F31091100EFD143 /* HueColorPicker.swift in Sources */,
 				309C11D72F3232A600EFD143 /* Results.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

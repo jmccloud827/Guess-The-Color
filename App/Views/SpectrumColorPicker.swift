@@ -46,14 +46,14 @@ struct SpectrumColorPicker: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(
-                        LinearGradient(gradient: hueGradient, startPoint: .top, endPoint: .bottom)
+                        LinearGradient(gradient: .hue, startPoint: .top, endPoint: .bottom)
                     )
                     .blur(radius: 5)
                     .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .overlay(
                         LinearGradient(gradient: Gradient(stops: [
                             .init(color: .init(hue: 0, saturation: 0, brightness: 1), location: 0.0),
-                            .init(color: .clear, location: 0.5),
+                            .init(color: .init(hue: 0, saturation: 0, brightness: 1, opacity: 0.0), location: 0.5),
                             .init(color: .init(hue: 0, saturation: 0, brightness: 0), location: 1.0)
                         ]),
                         startPoint: .leading,
@@ -61,7 +61,7 @@ struct SpectrumColorPicker: View {
                             .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     )
                     .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
-                    .shadow(color: colorScheme == .light ? .black : .white, radius: 1)
+                    .addShadow()
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { gesture in
@@ -85,23 +85,29 @@ struct SpectrumColorPicker: View {
                             }
                     )
                 
-                Circle()
-                    .fill(color)
-                    .frame(width: 20, height: 20)
-                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                    .scaleEffect(isChangingColor ? 1.75 : 1)
-                    .animation(.linear(duration: 0.25), value: isChangingColor)
-                    .position(x: getPickerXPercentage() * geometry.size.width,
-                              y: hue * geometry.size.height)
+                if let pickerXPercentage {
+                    Circle()
+                        .fill(color)
+                        .frame(width: 20, height: 20)
+                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                        .scaleEffect(isChangingColor ? 1.75 : 1)
+                        .animation(.linear(duration: 0.25), value: isChangingColor)
+                        .position(x: pickerXPercentage * geometry.size.width,
+                                  y: hue * geometry.size.height)
+                }
             }
         }
     }
     
-    private func getPickerXPercentage() -> Double {
-        if saturation != 1 {
-            return saturation / 2
+    private var pickerXPercentage: Double? {
+        if brightness != 1 && saturation != 1 {
+            return nil
         } else {
-            return (1 - brightness) / 2 + 0.5
+            if saturation != 1 {
+                return saturation / 2
+            } else {
+                return (1 - brightness) / 2 + 0.5
+            }
         }
     }
 }
@@ -109,6 +115,6 @@ struct SpectrumColorPicker: View {
 #Preview {
     @Previewable @State var color = Color.teal
     
-    SpectrumColorPicker(color: $color)
+    ColorPicker(color: $color)
         .padding()
 }

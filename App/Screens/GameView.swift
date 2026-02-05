@@ -15,11 +15,6 @@ struct GameView: View {
                 Results()
                     .offset(x: game.isComplete ? 0 : UIScreen.main.bounds.width)
             }
-            .safeAreaInset(edge: .bottom) {
-                if !game.isComplete {
-                    bottomButton
-                }
-            }
             .environment(game)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -32,47 +27,10 @@ struct GameView: View {
                 ToolbarItem(placement: .principal) {
                     Text(game.mode.title)
                         .font(.title)
-                        .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
             }
         }
-    }
-    
-    private var bottomButton: some View {
-        Text(game.isComplete ? "Done" : game.currentQuestion.isAnswered ? "Next Question" : "Guess")
-            .font(.title2)
-            .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
-            .contentTransition(.numericText())
-            .background {
-                RoundedRectangle(cornerRadius: 50)
-                    .foregroundStyle(.bar)
-            }
-            .glassEffect(.regular.interactive())
-            .shadow(color: colorScheme == .light ? .black.opacity(0.25) : .white.opacity(0.25), radius: 1)
-            .padding(.top)
-            .padding(.horizontal)
-            .onTapGesture {
-                if game.currentQuestion.isAnswered {
-                    withAnimation(.default) {
-                        game.nextQuestion()
-                    }
-                        
-                    if game.isComplete {
-                        withAnimation(.easeOut(duration: 0.5).delay(0.75)) {
-                            game.calculateAverageScores()
-                        }
-                    }
-                } else {
-                    withAnimation(.default) {
-                        game.currentQuestion.isAnswered = true
-                    }
-                        
-                    withAnimation(.easeOut(duration: 0.5).delay(0.75)) {
-                        game.currentQuestion.calculateScores()
-                    }
-                }
-            }
     }
 }
 

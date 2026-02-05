@@ -16,7 +16,7 @@ struct App: SwiftUI.App {
     return Image(systemName: "paintpalette")
         .resizable()
         .aspectRatio(contentMode: .fit)
-        .foregroundStyle(LinearGradient(gradient: hueGradient, startPoint: .trailing, endPoint: .topLeading))
+        .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .trailing, endPoint: .topLeading))
             .frame(width: 250, height: 250)
         .padding()
         .padding()

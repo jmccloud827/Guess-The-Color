@@ -252,7 +252,7 @@ extension Game {
     ]
 }
 
-let decimalFormat = FloatingPointFormatStyle<Double>.Percent().precision(.significantDigits(3)).rounded(rule: .up)
+let percentFormat = FloatingPointFormatStyle<Double>.Percent().precision(.significantDigits(3)).rounded(rule: .up)
 
 extension Color {
     init(red: Int, green: Int, blue: Int) {
