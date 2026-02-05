@@ -99,11 +99,3 @@ struct Results: View {
     
     return GameView(game: game)
 }
-
-#Preview("Plus Mode") {
-    let game = Game(mode: .hard, isPlusMode: true)
-    game.questions.forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
-    game.calculateAverageScores()
-    
-    return GameView2(game: game)
-}
