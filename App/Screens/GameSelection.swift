@@ -9,8 +9,8 @@ struct GameSelection: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                ForEach(Game.Mode.allCases, id: \.hashValue) { mode in
-                    makeDifficultyLabel(for: mode)
+                ForEach(Difficulty.allCases, id: \.hashValue) { difficulty in
+                    DifficultyButton(game: $game, difficulty: difficulty, isPlusMode: isPlusMode)
                 }
             }
             .padding(.horizontal)
@@ -33,50 +33,59 @@ struct GameSelection: View {
     }
     
     private var plusModeToggle: some View {
-        Button {
-            isPlusMode.toggle()
-        } label: {
-            Toggle(isOn: $isPlusMode) {
-                VStack(alignment: .leading) {
-                    Text("+ Mode")
-                        .font(.title2)
-                    
-                    Text("Questions stay the same but the answers are my guesses... and I'm colorblind😈.")
-                        .font(.subheadline)
-                        .foregroundStyle(.gray)
-                        .multilineTextAlignment(.leading)
-                }
+        Toggle(isOn: $isPlusMode) {
+            VStack(alignment: .leading) {
+                Text("+ Mode")
+                    .font(.title2)
+                
+                Text("Questions stay the same but the answers are my guesses... and I'm colorblind😈.")
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                    .multilineTextAlignment(.leading)
             }
-            .padding()
-            .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.plain)
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 30)
+                .foregroundStyle(.bar)
+        }
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
         .padding(.top)
         .padding(.horizontal)
+        .onTapGesture {
+            isPlusMode.toggle()
+        }
     }
+}
+
+private struct DifficultyButton: View {
+    @Binding var game: Game?
     
-    private func makeDifficultyLabel(for mode: Game.Mode) -> some View {
+    let difficulty: Difficulty
+    let isPlusMode: Bool
+    
+    var body: some View {
         Button {
-            game = .init(mode: mode, isPlusMode: isPlusMode)
+            game = .init(difficulty: difficulty, isPlusMode: isPlusMode)
         } label: {
             HStack {
-                Gauge(value: isPlusMode ? mode.gaugeValue / 2 + 0.5 : mode.gaugeValue / 2) {
+                Gauge(value: isPlusMode ? difficulty.gaugeValue / 2 + 0.5 : difficulty.gaugeValue / 2) {
                     Text("")
                 }
                 .gaugeStyle(.accessoryCircular)
-                .tint(mode.gaugeColor.gradient)
+                .tint(difficulty.gaugeColor.gradient)
                 .padding(.trailing)
                 .animation(.default, value: isPlusMode)
                 
                 VStack(alignment: .leading) {
-                    Text(mode.title + (isPlusMode ? "+" : ""))
+                    Text(difficulty.title + (isPlusMode ? "+" : ""))
                         .font(.title)
-                        .foregroundStyle(mode.gaugeColor)
+                        .foregroundStyle(difficulty.gaugeColor)
                         .animation(.default, value: isPlusMode)
                         .contentTransition(.numericText())
                     
-                    Text(mode.description)
+                    Text(difficulty.description)
                         .foregroundStyle(.gray)
                 }
                 

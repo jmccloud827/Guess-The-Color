@@ -19,6 +19,9 @@
 		309C11D92F33C3F200EFD143 /* SpectrumColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */; };
 		309C11DB2F34D2BF00EFD143 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */; };
 		309C11DD2F34DB2C00EFD143 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309C11DC2F34DB2C00EFD143 /* Extensions.swift */; };
+		30EF6ECA2F3B613A004DCF39 /* Difficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EF6EC92F3B613A004DCF39 /* Difficulty.swift */; };
+		30EF6ECC2F3B6254004DCF39 /* DifficultyLevels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EF6ECB2F3B6254004DCF39 /* DifficultyLevels.swift */; };
+		30EF6ECE2F3B6A02004DCF39 /* ScoreLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EF6ECD2F3B6A02004DCF39 /* ScoreLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +38,9 @@
 		309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		309C11DC2F34DB2C00EFD143 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		30A124532F2E539900AC99A0 /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30EF6EC92F3B613A004DCF39 /* Difficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Difficulty.swift; sourceTree = "<group>"; };
+		30EF6ECB2F3B6254004DCF39 /* DifficultyLevels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DifficultyLevels.swift; sourceTree = "<group>"; };
+		30EF6ECD2F3B6A02004DCF39 /* ScoreLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +71,8 @@
 			children = (
 				309C11CE2F31092100EFD143 /* Game.swift */,
 				309C11CF2F31092100EFD143 /* Question.swift */,
+				30EF6EC92F3B613A004DCF39 /* Difficulty.swift */,
+				30EF6ECB2F3B6254004DCF39 /* DifficultyLevels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -86,6 +94,7 @@
 				309C11DA2F34D2BF00EFD143 /* ColorPicker.swift */,
 				309C11C22F31091100EFD143 /* HueColorPicker.swift */,
 				309C11D82F33C3F200EFD143 /* SpectrumColorPicker.swift */,
+				30EF6ECD2F3B6A02004DCF39 /* ScoreLabel.swift */,
 				309C11DC2F34DB2C00EFD143 /* Extensions.swift */,
 			);
 			path = Views;
@@ -181,10 +190,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30EF6ECC2F3B6254004DCF39 /* DifficultyLevels.swift in Sources */,
 				309C11D12F31092100EFD143 /* Game.swift in Sources */,
 				309C11C62F31091100EFD143 /* GameSelection.swift in Sources */,
 				309C11C72F31091100EFD143 /* GameView.swift in Sources */,
+				30EF6ECA2F3B613A004DCF39 /* Difficulty.swift in Sources */,
 				309C11DD2F34DB2C00EFD143 /* Extensions.swift in Sources */,
+				30EF6ECE2F3B6A02004DCF39 /* ScoreLabel.swift in Sources */,
 				309C11C82F31091100EFD143 /* QuestionView.swift in Sources */,
 				309C11DB2F34D2BF00EFD143 /* ColorPicker.swift in Sources */,
 				309C11C92F31091100EFD143 /* App.swift in Sources */,

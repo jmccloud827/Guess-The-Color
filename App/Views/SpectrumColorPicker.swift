@@ -20,15 +20,6 @@ struct SpectrumColorPicker: View {
     
     var body: some View {
         picker
-            .onChange(of: hue) {
-                self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
-            }
-            .onChange(of: saturation) {
-                self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
-            }
-            .onChange(of: brightness) {
-                self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
-            }
             .onChange(of: color) {
                 if isChangingColor {
                     return
@@ -44,22 +35,7 @@ struct SpectrumColorPicker: View {
     private var picker: some View {
         GeometryReader { geometry in
             ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(
-                        LinearGradient(gradient: .hue, startPoint: .top, endPoint: .bottom)
-                    )
-                    .blur(radius: 5)
-                    .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .overlay(
-                        LinearGradient(gradient: Gradient(stops: [
-                            .init(color: .init(hue: 0, saturation: 0, brightness: 1), location: 0.0),
-                            .init(color: .init(hue: 0, saturation: 0, brightness: 1, opacity: 0.0), location: 0.5),
-                            .init(color: .init(hue: 0, saturation: 0, brightness: 0), location: 1.0)
-                        ]),
-                        startPoint: .leading,
-                        endPoint: .trailing)
-                            .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    )
+                spectrumShape
                     .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
                     .addShadow()
                     .gesture(
@@ -79,6 +55,8 @@ struct SpectrumColorPicker: View {
                                         self.brightness = 1 - min(max((xPercentage - 0.5) * 2, 0), 1)
                                     }
                                 }
+                                
+                                self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
                             }
                             .onEnded { _ in
                                 isChangingColor = false
@@ -97,6 +75,25 @@ struct SpectrumColorPicker: View {
                 }
             }
         }
+    }
+    
+    private var spectrumShape: some View {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(
+                LinearGradient(gradient: .hue, startPoint: .top, endPoint: .bottom)
+            )
+            .blur(radius: 5)
+            .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay(
+                LinearGradient(gradient: Gradient(stops: [
+                    .init(color: .init(hue: 0, saturation: 0, brightness: 1), location: 0.0),
+                    .init(color: .init(hue: 0, saturation: 0, brightness: 1, opacity: 0.0), location: 0.5),
+                    .init(color: .init(hue: 0, saturation: 0, brightness: 0), location: 1.0)
+                ]),
+                startPoint: .leading,
+                endPoint: .trailing)
+                    .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            )
     }
     
     private var pickerXPercentage: Double? {

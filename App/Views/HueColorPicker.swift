@@ -21,21 +21,12 @@ struct HueColorPicker: View {
     
     var body: some View {
         GeometryReader { outerGeometry in
-            VStack(spacing: 20) {
-                saturationAndHuePicker
+            VStack(spacing: 15) {
+                saturationAndBrightnessPicker
                     .frame(height: outerGeometry.size.height * 0.75)
                 
                 hueSlider
             }
-        }
-        .onChange(of: hue) {
-            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
-        }
-        .onChange(of: saturation) {
-            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
-        }
-        .onChange(of: brightness) {
-            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
         }
         .onChange(of: color) {
             if isChangingHue || isChangingSaturationAndBrightness {
@@ -49,29 +40,10 @@ struct HueColorPicker: View {
         }
     }
     
-    private var saturationAndHuePicker: some View {
+    private var saturationAndBrightnessPicker: some View {
         GeometryReader { geometry in
             ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(
-                        LinearGradient(gradient: Gradient(colors: [
-                            Color(hue: hue, saturation: 0, brightness: 1),
-                            Color(hue: hue, saturation: 1, brightness: 1)
-                        ]),
-                        startPoint: .leading,
-                        endPoint: .trailing)
-                    )
-                    .overlay(
-                        LinearGradient(gradient: Gradient(stops: [
-                            .init(color: Color.white, location: 0.0),
-                            .init(color: Color(white: 0.6, opacity: 0.5), location: 0.4),
-                            .init(color: Color(white: 0.05), location: 1.0)
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom)
-                            .blendMode(.multiply)
-                            .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    )
+                saturationAndBrightnessShape
                     .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
                     .addShadow()
                     .gesture(
@@ -83,6 +55,8 @@ struct HueColorPicker: View {
                                     self.saturation = min(max(gesture.location.x / geometry.size.width, 0), 1)
                                     self.brightness = 1 - min(max(gesture.location.y / geometry.size.height, 0), 1)
                                 }
+                                
+                                self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
                             }
                             .onEnded { _ in
                                 isChangingSaturationAndBrightness = false
@@ -101,6 +75,29 @@ struct HueColorPicker: View {
         }
     }
     
+    private var saturationAndBrightnessShape: some View {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(
+                LinearGradient(gradient: Gradient(colors: [
+                    Color(hue: hue, saturation: 0, brightness: 1),
+                    Color(hue: hue, saturation: 1, brightness: 1)
+                ]),
+                startPoint: .leading,
+                endPoint: .trailing)
+            )
+            .overlay(
+                LinearGradient(gradient: Gradient(stops: [
+                    .init(color: Color.white, location: 0.0),
+                    .init(color: Color(white: 0.6, opacity: 0.5), location: 0.4),
+                    .init(color: Color(white: 0.05), location: 1.0)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom)
+                    .blendMode(.multiply)
+                    .mask(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            )
+    }
+    
     private var hueSlider: some View {
         GeometryReader { geometry in
             RoundedRectangle(cornerRadius: 20)
@@ -117,6 +114,8 @@ struct HueColorPicker: View {
                             withAnimation(.linear(duration: 0.1)) {
                                 hue = gesture.location.x / geometry.size.width
                             }
+                            
+                            self.color = Color(hue: hue, saturation: saturation, brightness: brightness)
                         }
                         .onEnded { _ in
                             isChangingHue = false

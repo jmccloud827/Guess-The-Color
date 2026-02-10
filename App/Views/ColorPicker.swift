@@ -8,33 +8,45 @@ struct ColorPicker: View {
     @AppStorage("Picker Type") var pickerType = 1
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 20) {
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundStyle(color)
-                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
-                    .addShadow()
-                    .frame(height: geometry.size.height * 0.25)
-                
-                Picker("", selection: $pickerType) {
-                    Text("Hue")
-                        .tag(1)
-                    
-                    Text("Spectrum")
-                        .tag(2)
+        VStack(spacing: 15) {
+            colorPreview
+                .containerRelativeFrame(.vertical) { length, _ in
+                    length * 0.2
                 }
-                .pickerStyle(.segmented)
                 
-                ZStack {
-                    HueColorPicker(color: $color)
-                        .offset(x: pickerType == 1 ? 0 : -UIScreen.main.bounds.width)
-                    
-                    SpectrumColorPicker(color: $color)
-                        .offset(x: pickerType == 2 ? 0 : UIScreen.main.bounds.width)
-                }
-                .animation(.default, value: pickerType)
-            }
+            typePicker
+                
+            currentPicker
         }
+    }
+    
+    private var colorPreview: some View {
+        RoundedRectangle(cornerRadius: 20)
+            .foregroundStyle(color)
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+            .addShadow()
+    }
+    
+    private var typePicker: some View {
+        Picker("", selection: $pickerType) {
+            Text("Hue")
+                .tag(1)
+            
+            Text("Spectrum")
+                .tag(2)
+        }
+        .pickerStyle(.segmented)
+    }
+    
+    private var currentPicker: some View {
+        ZStack {
+            HueColorPicker(color: $color)
+                .offset(x: pickerType == 1 ? 0 : -screenSize.width)
+            
+            SpectrumColorPicker(color: $color)
+                .offset(x: pickerType == 2 ? 0 : screenSize.width)
+        }
+        .animation(.default, value: pickerType)
     }
 }
 

@@ -67,7 +67,7 @@ struct Results: View {
                 Text(title)
                     .bold()
                     
-                Text(score.formatted(percentFormat))
+                Text(score.formatted(.roundedPercent))
                     .font(.title)
                     .bold()
                     .contentTransition(.numericText())
@@ -85,7 +85,7 @@ struct Results: View {
 }
 
 #Preview("Regular") {
-    let game = Game(mode: .hard, isPlusMode: false)
+    let game = Game(difficulty: .hard, isPlusMode: false)
     game.questions.forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
     game.calculateAverageScores()
     
@@ -93,7 +93,7 @@ struct Results: View {
 }
 
 #Preview("Plus Mode") {
-    let game = Game(mode: .hard, isPlusMode: true)
+    let game = Game(difficulty: .hard, isPlusMode: true)
     game.questions.forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
     game.calculateAverageScores()
     

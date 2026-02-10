@@ -13,7 +13,7 @@ struct App: SwiftUI.App {
 
 /// App Icon
 #Preview {
-    return Image(systemName: "paintpalette")
+    Image(systemName: "paintpalette")
         .resizable()
         .aspectRatio(contentMode: .fit)
         .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .trailing, endPoint: .topLeading))

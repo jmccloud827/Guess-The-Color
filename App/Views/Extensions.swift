@@ -1,5 +1,7 @@
 import SwiftUI
 
+var screenSize: CGRect { UIScreen.main.bounds }
+
 extension View {
     func makeTopInset() -> some View {
         self
@@ -16,6 +18,18 @@ extension View {
         ShadowWrapper(opacity: opacity) {
             self
         }
+    }
+}
+
+extension EnvironmentValues {
+    @Entry var bounds: CGSize = .zero
+}
+
+extension FormatStyle where Self == Decimal.FormatStyle.Currency {
+    static var roundedPercent: FloatingPointFormatStyle<Double>.Percent {
+        .init()
+            .precision(.significantDigits(3))
+            .rounded(rule: .up)
     }
 }
 
@@ -49,6 +63,28 @@ extension Color {
                     .frame(maxHeight: .infinity, alignment: .bottom)
             }
     }
+    
+    func getRGB() -> (red: Double, green: Double, blue: Double) {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return (red, green, blue)
+    }
+    
+    func getHSB() -> (hue: Double, saturation: Double, brightness: Double) {
+        let uiColor = UIColor(self)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        
+        return (hue, saturation, brightness)
+    }
 }
 
 extension Gradient {
@@ -81,7 +117,7 @@ extension Double {
             HStack {
                 Text(title)
                 
-                Text(self.formatted(percentFormat))
+                Text(self.formatted(.roundedPercent))
                     .bold()
                     .contentTransition(.numericText())
             }
@@ -99,82 +135,14 @@ extension Double {
     }
 }
 
-extension Question {
-    func makeScoreLabel(isSmall: Bool = false, hasGlassEffect: Bool = true) -> some View {
-        ScoreLabelWrapper(question: self, isSmall: isSmall, hasGlassEffect: hasGlassEffect)
-    }
-}
-
-private struct ScoreLabelWrapper: View {
-    @Environment(\.colorScheme) private var colorScheme: ColorScheme
-    @Environment(Game.self) private var game
-    
-    let question: Question
-    let isSmall: Bool
-    let hasGlassEffect: Bool
-    
-    var body: some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 0) {
-                    Text("Name: ")
-                        .bold()
-                    
-                    Text(question.name)
-                        .foregroundStyle(question.isAnswered ? question.answer : colorScheme == .light ? .black : .white)
-                        .font(isSmall ? .title2 : .title)
-                        .bold()
-                        .contentTransition(.numericText())
-                }
-                .frame(maxWidth: .infinity, alignment: question.isAnswered ? .leading : .center)
-              
-                if question.isAnswered {
-                    HStack(alignment: .bottom, spacing: 0) {
-                        Text(game.isPlusMode ? "Score to my guess: " : "Score: ")
-                            .padding(.top, 3)
-                        
-                        Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(percentFormat))
-                            .bold()
-                            .contentTransition(.numericText())
-                     }
-                    .padding(.top, 3)
-                    .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)),
-                                            removal: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top))))
-                }
-                
-                Text((game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer).formatted(percentFormat))
-                    .opacity(0.0)
-                    .frame(height: 0.0)
-            }
-            .lineLimit(1)
-            .minimumScaleFactor(0.5)
-            
-            Spacer()
-            
-            if question.isAnswered {
-                Gauge(value: game.isPlusMode ? question.scoreToMyAnswer : question.scoreToCorrectAnswer) {
-                    Text("")
-                }
-                .tint(question.answer)
-                .gaugeStyle(.accessoryCircular)
-                .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
-                                        removal: .move(edge: .trailing).combined(with: .opacity)))
-            }
-        }
-        .padding(question.isAnswered && hasGlassEffect ? 10 : 0)
-        .frame(maxWidth: .infinity)
-        .glassEffect(question.isAnswered && hasGlassEffect ? .regular.interactive() : .identity, in: RoundedRectangle(cornerRadius: 20))
-    }
-}
-
 #Preview("Regular") {
-    let game = Game(mode: .hard, isPlusMode: false)
+    let game = Game(difficulty: .hard, isPlusMode: false)
     
     return GameView(game: game)
 }
 
 #Preview("Plus Mode") {
-    let game = Game(mode: .hard, isPlusMode: true)
+    let game = Game(difficulty: .hard, isPlusMode: true)
     
     return GameView(game: game)
 }

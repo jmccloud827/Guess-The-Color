@@ -11,10 +11,10 @@ struct QuestionView: View {
     var body: some View {
         ZStack {
             questionView
-                .offset(y: question.isAnswered ? -UIScreen.main.bounds.height : 0)
+                .offset(y: question.isAnswered ? -screenSize.height : 0)
             
             answerView
-                .offset(y: question.isAnswered ? 0 : UIScreen.main.bounds.height)
+                .offset(y: question.isAnswered ? 0 : screenSize.height)
         }
         .padding(.horizontal)
         .safeAreaInset(edge: .top) {
@@ -113,13 +113,13 @@ struct QuestionView: View {
 }
 
 #Preview("Regular") {
-    let game = Game(mode: .hard, isPlusMode: false)
+    let game = Game(difficulty: .hard, isPlusMode: false)
     
     return GameView(game: game)
 }
 
 #Preview("Plus Mode") {
-    let game = Game(mode: .hard, isPlusMode: true)
+    let game = Game(difficulty: .hard, isPlusMode: true)
     
     return GameView(game: game)
 }

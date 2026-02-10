@@ -10,10 +10,10 @@ struct GameView: View {
         NavigationStack {
             ZStack {
                 QuestionView(question: game.currentQuestion)
-                    .offset(x: game.isComplete ? -UIScreen.main.bounds.width : 0)
+                    .offset(x: game.isComplete ? -screenSize.width : 0)
                 
                 Results()
-                    .offset(x: game.isComplete ? 0 : UIScreen.main.bounds.width)
+                    .offset(x: game.isComplete ? 0 : screenSize.width)
             }
             .environment(game)
             .navigationBarTitleDisplayMode(.inline)
@@ -25,7 +25,7 @@ struct GameView: View {
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    Text(game.mode.title)
+                    Text(game.difficulty.title)
                         .font(.title)
                         .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
@@ -35,13 +35,15 @@ struct GameView: View {
 }
 
 #Preview("Regular") {
-    let game = Game(mode: .hard, isPlusMode: false)
+    let game = Game(difficulty: .hard, isPlusMode: false)
+    game.questions.prefix(11).forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
     
     return GameView(game: game)
 }
 
 #Preview("Plus Mode") {
-    let game = Game(mode: .hard, isPlusMode: true)
+    let game = Game(difficulty: .hard, isPlusMode: true)
+    game.questions.prefix(11).forEach { $0.isAnswered = true; $0.calculateScores(); game.nextQuestion() }
     
     return GameView(game: game)
 }
