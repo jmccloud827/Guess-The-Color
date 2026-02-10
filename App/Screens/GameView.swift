@@ -25,7 +25,7 @@ struct GameView: View {
                 }
                 
                 ToolbarItem(placement: .principal) {
-                    Text(game.difficulty.title)
+                    Text(game.difficulty.title + (game.isPlusMode ? "+" : ""))
                         .font(.title)
                         .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
