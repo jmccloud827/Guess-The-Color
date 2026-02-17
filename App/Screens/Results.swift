@@ -45,11 +45,11 @@ struct Results: View {
             }
             
             HStack {
-                question.guess.makeLabel(title: game.isPlusMode ? "Your Guess" : "Guess", isSmall: true)
-                
                 if game.isPlusMode {
                     question.myAnswer.makeLabel(title: "My Guess", isSmall: true)
                 }
+                
+                question.guess.makeLabel(title: game.isPlusMode ? "Your Guess" : "Guess", isSmall: true)
                 
                 question.answer.makeLabel(title: game.isPlusMode ? "Actual Color" : "Answer", isSmall: true)
             }

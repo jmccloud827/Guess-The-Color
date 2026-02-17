@@ -1,7 +1,5 @@
 import SwiftUI
 
-var screenSize: CGRect { UIScreen.main.bounds }
-
 extension View {
     func makeTopInset() -> some View {
         self
@@ -14,15 +12,28 @@ extension View {
             .padding(.horizontal)
     }
     
+    func makeBottomInsetButton(_ action: @escaping () -> Void) -> some View {
+        self
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background {
+                RoundedRectangle(cornerRadius: 30)
+                    .foregroundStyle(.bar)
+            }
+            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+            .addShadow(opacity: 0.25)
+            .padding(.top)
+            .padding(.horizontal)
+            .onTapGesture {
+                action()
+            }
+    }
+    
     func addShadow(opacity: Double = 1) -> some View {
         ShadowWrapper(opacity: opacity) {
             self
         }
     }
-}
-
-extension EnvironmentValues {
-    @Entry var bounds: CGSize = .zero
 }
 
 extension FormatStyle where Self == Decimal.FormatStyle.Currency {

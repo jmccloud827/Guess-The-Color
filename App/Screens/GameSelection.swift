@@ -44,16 +44,7 @@ struct GameSelection: View {
                     .multilineTextAlignment(.leading)
             }
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background {
-            RoundedRectangle(cornerRadius: 30)
-                .foregroundStyle(.bar)
-        }
-        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
-        .padding(.top)
-        .padding(.horizontal)
-        .onTapGesture {
+        .makeBottomInsetButton {
             isPlusMode.toggle()
         }
     }

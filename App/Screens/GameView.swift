@@ -9,11 +9,15 @@ struct GameView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                QuestionView(question: game.currentQuestion)
-                    .offset(x: game.isComplete ? -screenSize.width : 0)
+                if !game.isComplete {
+                    QuestionView(question: game.currentQuestion)
+                        .transition(.move(edge: .leading))
+                }
                 
-                Results()
-                    .offset(x: game.isComplete ? 0 : screenSize.width)
+                if game.isComplete {
+                    Results()
+                        .transition(.move(edge: .trailing))
+                }
             }
             .environment(game)
             .navigationBarTitleDisplayMode(.inline)

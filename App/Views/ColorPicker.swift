@@ -10,11 +10,13 @@ struct ColorPicker: View {
     var body: some View {
         VStack(spacing: 15) {
             colorPreview
+                .padding(.horizontal)
                 .containerRelativeFrame(.vertical) { length, _ in
                     length * 0.2
                 }
                 
             typePicker
+                .padding(.horizontal)
                 
             currentPicker
         }
@@ -40,11 +42,17 @@ struct ColorPicker: View {
     
     private var currentPicker: some View {
         ZStack {
-            HueColorPicker(color: $color)
-                .offset(x: pickerType == 1 ? 0 : -screenSize.width)
+            if pickerType == 1 {
+                HueColorPicker(color: $color)
+                    .transition(.move(edge: .leading))
+                    .padding(.horizontal)
+            }
             
-            SpectrumColorPicker(color: $color)
-                .offset(x: pickerType == 2 ? 0 : screenSize.width)
+            if pickerType == 2 {
+                SpectrumColorPicker(color: $color)
+                    .transition(.move(edge: .trailing))
+                    .padding(.horizontal)
+            }
         }
         .animation(.default, value: pickerType)
     }
@@ -54,5 +62,4 @@ struct ColorPicker: View {
     @Previewable @State var color = Color.teal
     
     ColorPicker(color: $color)
-        .padding()
 }

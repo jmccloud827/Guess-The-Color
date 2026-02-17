@@ -63,8 +63,7 @@ private struct ScoreLabelWrapper: View {
                 .contentTransition(.numericText())
         }
         .padding(.top, 3)
-        .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)),
-                                removal: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top))))
+        .transition(.blurReplace.combined(with: .scale(0, anchor: .leading)))
     }
     
     // Animation breaks if there is no value on screen. This is my dirty work around
@@ -80,8 +79,7 @@ private struct ScoreLabelWrapper: View {
         }
         .tint(question.answer)
         .gaugeStyle(.accessoryCircular)
-        .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
-                                removal: .move(edge: .trailing).combined(with: .opacity)))
+        .transition(.move(edge: .top).combined(with: .scale).combined(with: .opacity))
     }
 }
 

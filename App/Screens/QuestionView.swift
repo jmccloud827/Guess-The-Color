@@ -7,21 +7,26 @@ struct QuestionView: View {
     @Bindable var question: Question
     
     @State private var isDisclosureGroupOpen = true
+    @State private var isButtonDisabled = false
     
     var body: some View {
         ZStack {
-            questionView
-                .offset(y: question.isAnswered ? -screenSize.height : 0)
+            if !question.isAnswered {
+                questionView
+                    .transition(.move(edge: .leading))
+            }
             
-            answerView
-                .offset(y: question.isAnswered ? 0 : screenSize.height)
+            if question.isAnswered {
+                answerView
+                    .transition(.move(edge: .trailing))
+            }
         }
-        .padding(.horizontal)
         .safeAreaInset(edge: .top) {
             topInset
         }
         .safeAreaInset(edge: .bottom) {
             bottomButton
+                .disabled(isButtonDisabled)
         }
     }
     
@@ -54,6 +59,7 @@ struct QuestionView: View {
                 question.answer.makeLabel(title: "Answer")
             }
         }
+        .padding(.horizontal)
     }
     
     private var topInset: some View {
@@ -63,10 +69,7 @@ struct QuestionView: View {
                 
                 if game.isPlusMode && question.isAnswered {
                     game.makeScoreToActualColorSection(title: "Score to actual color: ", you: question.scoreToCorrectAnswer, me: question.myScoreToCorrectAnswer)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)).combined(with: .opacity),
-                            removal: .move(edge: .top).combined(with: .scale(scale: 0, anchor: .top)).combined(with: .opacity)
-                        ))
+                        .transition(.blurReplace.combined(with: .scale(0, anchor: .leading)))
                 }
             }
             .padding(.vertical)
@@ -77,21 +80,14 @@ struct QuestionView: View {
     private var bottomButton: some View {
         Text(game.isComplete ? "Done" : game.currentQuestion.isAnswered ? "Next Question" : "Guess")
             .font(.title2)
-            .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
             .contentTransition(.numericText())
-            .background {
-                RoundedRectangle(cornerRadius: 50)
-                    .foregroundStyle(.bar)
-            }
-            .glassEffect(.regular.interactive())
-            .addShadow(opacity: 0.25)
-            .padding(.top)
-            .padding(.horizontal)
-            .onTapGesture {
+            .makeBottomInsetButton {
+                isButtonDisabled = true
                 if game.currentQuestion.isAnswered {
-                    withAnimation(.default) {
+                    withAnimation {
                         game.nextQuestion()
+                    } completion: {
+                        isButtonDisabled = false
                     }
                         
                     if game.isComplete {
@@ -100,8 +96,10 @@ struct QuestionView: View {
                         }
                     }
                 } else {
-                    withAnimation(.default) {
+                    withAnimation {
                         game.currentQuestion.isAnswered = true
+                    } completion: {
+                        isButtonDisabled = false
                     }
                         
                     withAnimation(.easeOut(duration: 0.5).delay(0.75)) {
