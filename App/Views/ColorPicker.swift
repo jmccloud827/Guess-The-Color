@@ -11,8 +11,8 @@ struct ColorPicker: View {
         VStack(spacing: 15) {
             colorPreview
                 .padding(.horizontal)
-                .containerRelativeFrame(.vertical) { length, _ in
-                    length * 0.2
+                .containerRelativeFrame(.vertical) { height, _ in
+                    height * 0.2
                 }
                 
             typePicker

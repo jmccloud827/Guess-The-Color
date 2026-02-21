@@ -134,8 +134,8 @@ extension Double {
             }
             .lineLimit(1)
             .minimumScaleFactor(0.5)
-            .containerRelativeFrame(.horizontal) { length, _ in
-                length * (1 / 4)
+            .containerRelativeFrame(.horizontal) { width, _ in
+                width * 0.25
             }
             
             Gauge(value: self) {
