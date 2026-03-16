@@ -17,7 +17,7 @@ struct App: SwiftUI.App {
         .resizable()
         .aspectRatio(contentMode: .fit)
         .foregroundStyle(LinearGradient(gradient: .hue, startPoint: .trailing, endPoint: .topLeading))
-            .frame(width: 250, height: 250)
+        .frame(width: 250, height: 250)
         .padding()
         .padding()
         .padding(44)

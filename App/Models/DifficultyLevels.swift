@@ -162,8 +162,8 @@ struct BaseQuestionModel {
     let notes: String
 }
 
-extension Color {
-    fileprivate init(red: Int, green: Int, blue: Int) {
+private extension Color {
+    init(red: Int, green: Int, blue: Int) {
         self.init(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255)
     }
 }

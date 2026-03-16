@@ -22,8 +22,8 @@ struct Results: View {
         VStack(spacing: 0) {
             if game.isPlusMode {
                 makeAverageScoreLabel(title: "Average score to my guess: ", score: game.averageScoreToMyAnswer)
-                .padding()
-                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                    .padding()
+                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
             } else {
                 makeAverageScoreLabel(title: "Average score: ", score: game.averageScoreToCorrectAnswer)
             }
