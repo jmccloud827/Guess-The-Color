@@ -63,16 +63,14 @@ struct SpectrumColorPicker: View {
                             }
                     )
                 
-                if let pickerXPercentage {
-                    Circle()
-                        .fill(color)
-                        .frame(width: 20, height: 20)
-                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                        .scaleEffect(isChangingColor ? 1.75 : 1)
-                        .animation(.linear(duration: 0.25), value: isChangingColor)
-                        .position(x: pickerXPercentage * geometry.size.width,
-                                  y: hue * geometry.size.height)
-                }
+                Circle()
+                    .fill(color)
+                    .frame(width: 20, height: 20)
+                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                    .scaleEffect(isChangingColor ? 1.75 : 1)
+                    .animation(.linear(duration: 0.25), value: isChangingColor)
+                    .position(x: pickerXPercentage * geometry.size.width,
+                              y: hue * geometry.size.height)
             }
         }
     }
@@ -96,15 +94,11 @@ struct SpectrumColorPicker: View {
             )
     }
     
-    private var pickerXPercentage: Double? {
-        if brightness != 1 && saturation != 1 {
-            return nil
+    private var pickerXPercentage: Double {
+        if brightness >= saturation {
+            return saturation / 2
         } else {
-            if saturation != 1 {
-                return saturation / 2
-            } else {
-                return (1 - brightness) / 2 + 0.5
-            }
+            return (1 - brightness) / 2 + 0.5
         }
     }
 }

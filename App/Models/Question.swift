@@ -1,6 +1,7 @@
 import SwiftUI
 
-@Observable class Question {
+@Observable class Question: Identifiable {
+    let id = UUID()
     let answer: Color
     let name: String
     let myAnswer: Color

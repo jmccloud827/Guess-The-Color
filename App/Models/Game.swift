@@ -14,7 +14,7 @@ import SwiftUI
     init(difficulty: Difficulty, isPlusMode: Bool) {
         self.difficulty = difficulty
         self.questions = difficulty.questions
-        self.currentQuestion = difficulty.questions.first!
+        self.currentQuestion = self.questions.first!
         self.isPlusMode = isPlusMode
     }
     

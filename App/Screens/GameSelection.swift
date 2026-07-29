@@ -9,7 +9,7 @@ struct GameSelection: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                ForEach(Difficulty.allCases, id: \.hashValue) { difficulty in
+                ForEach(Difficulty.allCases, id: \.self) { difficulty in
                     DifficultyButton(game: $game, difficulty: difficulty, isPlusMode: isPlusMode)
                 }
             }

@@ -7,7 +7,7 @@ struct Results: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 15) {
-                ForEach(game.questions.enumerated(), id: \.offset) { _, question in
+                ForEach(game.questions) { question in
                     makeSection(for: question)
                 }
             }
