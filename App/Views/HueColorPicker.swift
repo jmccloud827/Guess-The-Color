@@ -21,13 +21,11 @@ struct HueColorPicker: View {
     
     var body: some View {
         GeometryReader { outerGeometry in
-            GlassEffectContainer {
-                VStack(spacing: 15) {
-                    saturationAndBrightnessPicker
-                        .frame(height: outerGeometry.size.height * 0.75)
-
-                    hueSlider
-                }
+            VStack(spacing: 15) {
+                saturationAndBrightnessPicker
+                    .frame(height: outerGeometry.size.height * 0.75)
+                
+                hueSlider
             }
         }
         .onChange(of: color) {

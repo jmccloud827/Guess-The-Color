@@ -6,7 +6,7 @@ struct Results: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 15) {
+            VStack(spacing: 15) {
                 ForEach(game.questions) { question in
                     makeSection(for: question)
                 }
@@ -37,30 +37,28 @@ struct Results: View {
     }
     
     private func makeSection(for question: Question) -> some View {
-        GlassEffectContainer {
-            VStack(spacing: 10) {
-                question.makeScoreLabel(isSmall: true)
-
-                if game.isPlusMode {
-                    game.makeScoreToActualColorSection(title: "Score to actual color: ", you: question.scoreToCorrectAnswer, me: question.myScoreToCorrectAnswer)
-                }
-
-                HStack {
-                    if game.isPlusMode {
-                        question.myAnswer.makeLabel(title: "My Guess", isSmall: true)
-                    }
-
-                    question.guess.makeLabel(title: game.isPlusMode ? "Your Guess" : "Guess", isSmall: true)
-
-                    question.answer.makeLabel(title: game.isPlusMode ? "Actual Color" : "Answer", isSmall: true)
-                }
-                .frame(height: 100)
+        VStack(spacing: 10) {
+            question.makeScoreLabel(isSmall: true)
+            
+            if game.isPlusMode {
+                game.makeScoreToActualColorSection(title: "Score to actual color: ", you: question.scoreToCorrectAnswer, me: question.myScoreToCorrectAnswer)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 20)
-            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
-            .addShadow(opacity: 0.25)
+            
+            HStack {
+                if game.isPlusMode {
+                    question.myAnswer.makeLabel(title: "My Guess", isSmall: true)
+                }
+                
+                question.guess.makeLabel(title: game.isPlusMode ? "Your Guess" : "Guess", isSmall: true)
+                
+                question.answer.makeLabel(title: game.isPlusMode ? "Actual Color" : "Answer", isSmall: true)
+            }
+            .frame(height: 100)
         }
+        .padding(.horizontal)
+        .padding(.vertical, 20)
+        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 30))
+        .addShadow(opacity: 0.25)
     }
     
     private func makeAverageScoreLabel(title: String, score: Double) -> some View {
