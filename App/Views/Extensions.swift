@@ -58,21 +58,23 @@ private struct ShadowWrapper<Content: View>: View {
 
 extension Color {
     func makeLabel(title: String, isSmall: Bool = false) -> some View {
-        RoundedRectangle(cornerRadius: isSmall ? 20 : 40)
-            .foregroundStyle(self)
-            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: isSmall ? 20 : 40))
-            .addShadow()
-            .overlay {
-                Text(title)
-                    .font(isSmall ? .body : .title3)
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .padding(isSmall ? 5 : 10)
-                    .frame(maxWidth: .infinity)
-                    .glassEffect(.regular.interactive())
-                    .padding(isSmall ? 10 : 15)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-            }
+        GlassEffectContainer {
+            RoundedRectangle(cornerRadius: isSmall ? 20 : 40)
+                .foregroundStyle(self)
+                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: isSmall ? 20 : 40))
+                .addShadow()
+                .overlay {
+                    Text(title)
+                        .font(isSmall ? .body : .title3)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding(isSmall ? 5 : 10)
+                        .frame(maxWidth: .infinity)
+                        .glassEffect(.regular.interactive())
+                        .padding(isSmall ? 10 : 15)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                }
+        }
     }
     
     func getRGB() -> (red: Double, green: Double, blue: Double) {
